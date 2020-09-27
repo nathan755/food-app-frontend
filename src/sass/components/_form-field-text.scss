@@ -8,9 +8,11 @@
         max-width: 350px;
         height: 40px;
         border-bottom:2px solid $blue;
+        background-color:lighten($blue, 50%);
         & input {
             border: none;
             color: black;
+            background-color:lighten($blue, 50%);
             &:focus {
                 outline:none;
             }
