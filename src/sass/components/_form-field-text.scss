@@ -1,0 +1,29 @@
+.form-field-text {
+    margin: 6px;
+    &__input {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        max-width: 350px;
+        height: 40px;
+        border-bottom:2px solid $blue;
+        & input {
+            border: none;
+            color: black;
+            &:focus {
+                outline:none;
+            }
+        }
+        &.error {
+            & input {
+                background-color: lighten($red, 50%);
+            }
+            background-color: lighten($red, 50%);
+            border-bottom:2px solid $red;
+        }
+    }
+    & small {
+        color: $red;
+    }
+}

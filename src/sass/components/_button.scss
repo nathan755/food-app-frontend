@@ -1,0 +1,21 @@
+.button {
+    background-color: $blue;
+    height: 30px;
+    width: 100px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: right;
+    border-radius: 2px;
+    &:active{
+        background-color: darken($blue, 5%);
+    }
+    & button {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: white;
+        cursor: pointer;
+    }
+}
