@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import TextFormField from "../components/text-field";
 import Button from "../components/button";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 class Login extends Component {
     constructor(props){
@@ -10,40 +10,67 @@ class Login extends Component {
         this.state = {
             email:"",
             password:"",
-            emailError:false,
-            passwordError:false
+            emailErrorMessage:"",
+            passwordErrorMessage:"",
+            loading:false,
+            redirect:false
         }
 
         this.onInputChange = this.onInputChange.bind(this);
-
+        this.onLoginClick = this.onLoginClick.bind(this);
     }
-
+    
     onInputChange(event){
-        console.log("event", event)
+        const currentInputValue = event.currentTarget.getAttribute("data-key");
+        this.setState({[currentInputValue]:event.target.value});
     }
 
     onLoginClick(event){
-        console.log("event", event)
+        // redux action to login.. ugh
+        if(this.validateInput()===true){
+            this.setState({loading:true});
+        }
     }
 
+    validateInput(){
+        let emailErrorMessage="", passwordErrorMessage="", validateForm=true;
 
+        if(this.state.email ===""){
+            emailErrorMessage = "Email Field Required";
+            validateForm = false;
+        }
+        if(this.state.password === ""){
+            passwordErrorMessage = "Password Field Required";
+            validateForm = false;
+        }
+        if(validateForm === false){
+            this.setState({
+                emailErrorMessage,
+                passwordErrorMessage
+            });
+        }
+        return validateForm;
+    }
+    
     render(){
+        if(this.state.redirect){
+            return <Redirect to="/dashboard" />;
+        }
+
         return (
             <div className="login">
                 <h1>Login</h1>
                 <div className="login__fields">
                     <TextFormField 
-                        errorMessage="" 
+                        errorMessage={this.state.emailErrorMessage} 
                         dataKey="email" 
-                        hasErrors={this.state.emailError}
                         label="Email" 
                         placeholder="Email..."
                         onChange={this.onInputChange} 
                     />
                     <TextFormField 
-                        errorMessage="" 
+                        errorMessage={this.state.passwordErrorMessage}
                         dataKey="password" 
-                        hasErrors={this.state.passwordError}
                         label="Password" 
                         placeholder="Password..."
                         onChange={this.onInputChange} 
@@ -52,7 +79,7 @@ class Login extends Component {
 
 
                <div className="login__buttons" >
-                <Button onClick={this.onLoginClick} value="Login" />
+                <Button onClick={this.onLoginClick} value="Login" loading={this.state.loading} />
                     <Link to="/reset-password"><small>Forgot your password?</small></Link>
                </div>
                 

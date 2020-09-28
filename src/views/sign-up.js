@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import TextFormField from "../components/text-field";
 import Button from "../components/button";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import Axios from "axios";
 // two types of sign up accoutn sign up and user sign up
 // user sign up will be allowed if there are querey params present ie they came from an invite link -- will have to add some sort of sign uo token.
-
-
 
 class SignUp extends Component {
     constructor(props){
@@ -26,7 +24,9 @@ class SignUp extends Component {
             companyNameErrorMessage:"",
             emailErrorMessage:"",
             passwordErrorMessage:"",
-            confirmPasswordErrorMessage:""
+            confirmPasswordErrorMessage:"",
+            loading:false,
+            redirect:false
         }
 
         this.onInputChange = this.onInputChange.bind(this);
@@ -37,12 +37,12 @@ class SignUp extends Component {
 
     onInputChange(event){
         const currentInputValue = event.currentTarget.getAttribute("data-key");
-        this.setState({[currentInputValue]:event.target.value})
+        this.setState({[currentInputValue]:event.target.value});
     }
 
-    onSignUpClick(event) {
-        console.log("here1")
+    onSignUpClick() {
         if (this.validateFields()===false) {
+            this.setState({loading:true});
             Axios.post("http://127.0.0.1:3001/account-sign-up", {
                 company_name: this.state.companyName,
                 email: this.state.email,
@@ -50,8 +50,14 @@ class SignUp extends Component {
                 username: this.state.username,
                 first_name: this.state.firstName,
                 last_name: this.state.lastName,
+            }).then(()=>{
+                this.setState({redirect:true});
+            }).catch((err)=>{
+                // set some sort of errr message (use redux)
+                this.setState({loading:false});
             });
         }
+        
     }
 
     validateFields(){
@@ -91,7 +97,7 @@ class SignUp extends Component {
             lastNameErrorMessage = "Last Name Required";
             formError = true;
         }
-
+        
         if (formError) {
             this.setState({
                 usernameErrorMessage,
@@ -104,12 +110,16 @@ class SignUp extends Component {
                 formError
             });
         }
-
+        
         return formError;
 
     }
     
     render(){
+        if(this.state.redirect){
+            return <Redirect to="login" />;
+        }
+        
         return (
             <div className="sign-up">
                 <h1>Sign Up</h1>
@@ -168,17 +178,14 @@ class SignUp extends Component {
                         />
                     </div>
                 </div>
-
-
-               <div className="sign-up__buttons" >
-                <Button onClick={this.onSignUpClick} value="Sign Up" loading={true} />
+                <div className="sign-up__buttons" >
+                    <Button onClick={this.onSignUpClick} value="Sign Up" loading={this.state.loading}/>
                 </div>
                 <div>
-                <Link to="/login"><small className="redirect">Already have an Account?</small></Link>
-
+                    <Link to="/login"><small className="redirect">Already have an Account?</small></Link>
                 </div>
             </div>
-        )
+        );
     }
 }
 
