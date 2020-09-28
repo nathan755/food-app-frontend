@@ -10,7 +10,9 @@ class Button extends Component {
     render(){
         return (
             <div className={`button ${this.props.secondary ? "secondary":""}`}>
-                <button onClick={this.onClick}>{this.props.value}</button>
+                {this.props.loading && <i class="fas fa-spinner fa-spin"></i>}
+                <button onClick={this.onClick}>{this.props.loading ? "Loading":this.props.value }</button>
+                
             </div>
         );
     }

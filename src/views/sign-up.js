@@ -167,13 +167,11 @@ class SignUp extends Component {
                             onChange={this.onInputChange} 
                         />
                     </div>
-                   
-                    
                 </div>
 
 
                <div className="sign-up__buttons" >
-                <Button onClick={this.onSignUpClick} value="Sign Up" />
+                <Button onClick={this.onSignUpClick} value="Sign Up" loading={true} />
                 </div>
                 <div>
                 <Link to="/login"><small className="redirect">Already have an Account?</small></Link>
