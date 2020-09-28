@@ -44,7 +44,7 @@ class Login extends Component {
                         errorMessage="" 
                         dataKey="password" 
                         hasErrors={this.state.passwordError}
-                        label="Email" 
+                        label="Password" 
                         placeholder="Password..."
                         onChange={this.onInputChange} 
                     />

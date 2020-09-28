@@ -1,0 +1,38 @@
+.sign-up {
+    background-color: white;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 1px 1px 2px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    & h1 {
+        text-align: center;
+        color: $dark-grey;
+    }
+    &__fields {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        &-left {
+            flex: 1;
+            margin-left: 12px;
+        }
+        &-right{
+            flex: 1;
+            margin-right: 12px;
+        }
+    }
+    &__buttons{
+        margin: 12px;
+        height: 30px;
+    }
+    & small {
+        text-align: center;
+        display: block;
+        margin: 6px;
+        color: $dark-grey;
+    }
+}
