@@ -12,7 +12,7 @@ const account = (state=initialState, action ) => {
                 ...state,
                 accountId:action.payload.accountId,
                 loggedIn:true,
-                companyName:action.payload.companyName,
+                companyName:action.payload.company_name,
                 email:action.payload.email,
             }
             

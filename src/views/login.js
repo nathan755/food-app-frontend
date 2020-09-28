@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import TextFormField from "../components/text-field";
 import Button from "../components/button";
 import {Link, Redirect} from "react-router-dom";
+import { connect } from 'react-redux';
+import { login, logout } from "../redux/actions/account";
 
 class Login extends Component {
     constructor(props){
@@ -26,9 +28,10 @@ class Login extends Component {
     }
 
     onLoginClick(event){
-        // redux action to login.. ugh
         if(this.validateInput()===true){
             this.setState({loading:true});
+            this.props.login(this.state.email, this.state.password);
+            this.setState({redirect:true})
         }
     }
 
@@ -79,14 +82,20 @@ class Login extends Component {
 
 
                <div className="login__buttons" >
-                <Button onClick={this.onLoginClick} value="Login" loading={this.state.loading} />
+                    <Button onClick={this.onLoginClick} value="Login" loading={this.state.loading} />
                     <Link to="/reset-password"><small>Forgot your password?</small></Link>
                </div>
-                
-                <Link to="/sign-up"><p>Need an Account?</p></Link>
+               <Link to="/sign-up"><p>Need an Account?</p></Link>
             </div>
         )
     }
 }
 
-export default Login;
+const mapDispatchToProps = (dispatch)=>{
+    return{
+        login:(email, password)=>{dispatch(login(email,password))},
+        logout:()=>{dispatch(logout())}
+    }
+}
+
+export default connect(null,mapDispatchToProps)(Login);
