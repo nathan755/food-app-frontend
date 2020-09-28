@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import TextFormField from "../components/text-field";
 import Button from "../components/button";
 import {Link} from "react-router-dom";
+import Axios from "axios";
+// two types of sign up accoutn sign up and user sign up
+// user sign up will be allowed if there are querey params present ie they came from an invite link -- will have to add some sort of sign uo token.
+
+
 
 class SignUp extends Component {
     constructor(props){
@@ -11,32 +16,99 @@ class SignUp extends Component {
             email:"",
             password:"",
             username:"",
-            role:"",
+            confirmPassword:"",
             firstName:"",
             lastName:"",
             companyName:"",
-            usernameError:false,
-            roleError:false,
-            firstNameError:false,
-            lastNameError:false,
-            companyNameError:false,
-            emailError:false,
-            passwordError:false
+            usernameErrorMessage:"",
+            firstNameErrorMessage:"",
+            lastNameErrorMessage:"",
+            companyNameErrorMessage:"",
+            emailErrorMessage:"",
+            passwordErrorMessage:"",
+            confirmPasswordErrorMessage:""
         }
 
         this.onInputChange = this.onInputChange.bind(this);
+        this.onSignUpClick = this.onSignUpClick.bind(this);
+        this.validateFields = this.validateFields.bind(this);
 
     }
 
     onInputChange(event){
-        console.log("event", event)
+        const currentInputValue = event.currentTarget.getAttribute("data-key");
+        this.setState({[currentInputValue]:event.target.value})
     }
 
-    onLoginClick(event){
-        console.log("event", event)
+    onSignUpClick(event) {
+        console.log("here1")
+        if (this.validateFields()===false) {
+            Axios.post("http://127.0.0.1:3001/account-sign-up", {
+                company_name: this.state.companyName,
+                email: this.state.email,
+                password: this.state.password,
+                username: this.state.username,
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+            });
+        }
     }
 
+    validateFields(){
+        // later add the form fields into some sort of config object and make password requirments
+        let usernameErrorMessage ="", emailErrorMessage="", passwordErrorMessage="", confirmPasswordErrorMessage="", companyNameErrorMessage="", firstNameErrorMessage="", lastNameErrorMessage="", formError=false;
+        
+        if(this.state.username === ""){
+            usernameErrorMessage = "Username Required";
+            formError = true;
+        }
+        if(this.state.email === ""){
+            emailErrorMessage = "Email Required";
+            formError = true;
+        }
+        if(this.state.password !== this.state.confirmPassword && this.state.password !=="" && this.state.confirmPassword !==""){
+            passwordErrorMessage = "Passwords Dont Match";
+            confirmPasswordErrorMessage = "Passwords Dont Match"
+            formError = true;
+        }
+        if(this.state.password === ""){
+            passwordErrorMessage = "Password Required";
+            formError = true;
+        }
+        if(this.state.confirmPassword === ""){
+            confirmPasswordErrorMessage = "Confirm Password Required";
+            formError = true;
+        }
+        if(this.state.companyName=== ""){
+            companyNameErrorMessage = "Company Name Required";
+            formError = true;
+        }
+        if(this.state.firstName === ""){
+            firstNameErrorMessage = "First Name Required";
+            formError = true;
+        }
+        if(this.state.lastName === ""){
+            lastNameErrorMessage = "Last Name Required";
+            formError = true;
+        }
 
+        if (formError) {
+            this.setState({
+                usernameErrorMessage,
+                firstNameErrorMessage,
+                lastNameErrorMessage,
+                companyNameErrorMessage,
+                emailErrorMessage,
+                passwordErrorMessage,
+                confirmPasswordErrorMessage,
+                formError
+            });
+        }
+
+        return formError;
+
+    }
+    
     render(){
         return (
             <div className="sign-up">
@@ -44,33 +116,29 @@ class SignUp extends Component {
                 <div className="sign-up__fields">
                     <div className="sign-up__fields-left">
                         <TextFormField 
-                            errorMessage="" 
+                            errorMessage={this.state.usernameErrorMessage}
                             dataKey="username" 
-                            hasErrors={this.state.usernameError}
                             label="Username" 
                             placeholder="Username..."
                             onChange={this.onInputChange} 
                         />
                         <TextFormField 
-                            errorMessage="" 
+                            errorMessage={this.state.emailErrorMessage} 
                             dataKey="email" 
-                            hasErrors={this.state.emailError}
                             label="Email" 
                             placeholder="Email..."
                             onChange={this.onInputChange} 
                         />
                         <TextFormField 
-                            errorMessage="" 
+                            errorMessage={this.state.passwordErrorMessage} 
                             dataKey="password" 
-                            hasErrors={this.state.passwordError}
                             label="Password" 
                             placeholder="Password..."
                             onChange={this.onInputChange} 
                         />
                         <TextFormField 
-                            errorMessage="" 
-                            dataKey="confirm-password" 
-                            hasErrors={this.state.confirmPasswordError}
+                            errorMessage={this.state.confirmPasswordErrorMessage} 
+                            dataKey="confirmPassword" 
                             label="Confirm Password" 
                             placeholder="Confirm Password..."
                             onChange={this.onInputChange} 
@@ -78,27 +146,24 @@ class SignUp extends Component {
                     </div>
                     <div className="sign-up__fields-right">
                         <TextFormField 
-                            errorMessage="" 
-                            dataKey="role" 
-                            hasErrors={this.state.roleError}
-                            label="Role" 
-                            placeholder="Role..."
+                            errorMessage={this.state.companyNameErrorMessage} 
+                            dataKey="companyName" 
+                            label="Company Name" 
+                            placeholder="Company Name..."
                             onChange={this.onInputChange} 
                         />
                         <TextFormField 
-                            errorMessage="" 
-                            dataKey="first-name" 
-                            hasErrors={this.state.firstNameError}
+                            errorMessage={this.state.firstNameErrorMessage} 
+                            dataKey="firstName" 
                             label="First Name" 
                             placeholder="First Name..."
                             onChange={this.onInputChange} 
                         />
                         <TextFormField 
-                            errorMessage="" 
-                            dataKey="last-name" 
-                            hasErrors={this.state.confirmPasswordError}
-                            label="Confirm Password" 
-                            placeholder="Confirm Password..."
+                            errorMessage={this.state.lastNameErrorMessage} 
+                            dataKey="lastName" 
+                            label="Last Name" 
+                            placeholder="Last Name..."
                             onChange={this.onInputChange} 
                         />
                     </div>
@@ -108,10 +173,10 @@ class SignUp extends Component {
 
 
                <div className="sign-up__buttons" >
-                <Button onClick={this.onLoginClick} value="Sign Up" />
+                <Button onClick={this.onSignUpClick} value="Sign Up" />
                 </div>
                 <div>
-                <Link to="/login"><small>Already have an Account?</small></Link>
+                <Link to="/login"><small className="redirect">Already have an Account?</small></Link>
 
                 </div>
             </div>

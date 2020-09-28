@@ -29,10 +29,12 @@
         margin: 12px;
         height: 30px;
     }
-    & small {
-        text-align: center;
-        display: block;
-        margin: 6px;
-        color: $dark-grey;
-    }
+   
+}
+.redirect {
+    text-align: center;
+    display: block;
+    margin: 6px;
+    color: $dark-grey;
+    
 }

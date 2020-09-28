@@ -22,7 +22,7 @@ class TextFormField extends Component {
         return(
             <div className={`form-field-text`}>
                 <label>{this.props.label}</label>
-                <div className={`form-field-text__input ${this.props.hasErrors ? "error":""}`}>
+                <div className={`form-field-text__input ${this.props.errorMessage !=="" ? "error":""}`}>
                     <input onChange={this.props.onChange} data-key={this.props.dataKey} placeholder={this.props.placeholder}/>
                 </div>
                 <small>{this.props.errorMessage}</small>
