@@ -1,3 +1,11 @@
 .create-user-popup {
-    
+    &__box-container{
+        display: flex;
+        & .menu-box{
+            margin-top: 0;
+        }
+    }
+    & .box-label{
+        margin-left: 12px;
+    }
 }
