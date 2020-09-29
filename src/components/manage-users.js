@@ -46,6 +46,7 @@ class ManageUsers extends Component {
                         onClick={this.onCreateUserMenuClick}
                     />
                     <MenuBox
+                        
                         icon={<i class="fas fa-envelope"></i>}
                         title="Invite Users"
                         onClick={this.onInviteUserMenuClick}
