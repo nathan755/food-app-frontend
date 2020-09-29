@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import MenuBox from "./menu-selection";
 import CreateUserPopup from "./popups/create-user";
+import InviteUsersPopup from "./popups/invite-users";
+
 
 class ManageUsers extends Component {
     constructor(props){
@@ -15,6 +17,7 @@ class ManageUsers extends Component {
         this.onInviteUserMenuClick = this.onInviteUserMenuClick.bind(this);
         this.sendInvites = this.sendInvites.bind(this);
         this.addUser = this.addUser.bind(this);
+        this.closePopup = this.closePopup.bind(this);
     }
 
     sendInvites(){
@@ -26,11 +29,18 @@ class ManageUsers extends Component {
     }
 
     onCreateUserMenuClick(){
-        console.log("click")
+        this.setState({createUserPopupOpen:true});
     }
 
     onInviteUserMenuClick(){
-        console.log("invite")
+        this.setState({inviteUserPopupOpen:true});
+    }
+
+    closePopup(){
+        this.setState({
+            createUserPopupOpen:false,
+            inviteUserPopupOpen:false
+        })
     }
 
     render(){
@@ -52,7 +62,11 @@ class ManageUsers extends Component {
                         onClick={this.onInviteUserMenuClick}
                     />
                 </div>
-                <CreateUserPopup />
+                {this.state.createUserPopupOpen && <CreateUserPopup close={this.closePopup} />}
+                {this.state.inviteUserPopupOpen && <InviteUsersPopup close={this.closePopup} />}
+
+                
+                
             </div>
         )
     }

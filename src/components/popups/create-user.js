@@ -64,7 +64,7 @@ class CreateUserPopup extends Component {
     }
 
     onCancelClick(){
-        // call props cancel function to close pop up 
+        this.props.close() 
     }
 
     validateFields(){
