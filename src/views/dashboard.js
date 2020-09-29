@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import SideNav from "../components/side-navigation";
-import {Link, Redirect, Switch} from "react-router-dom";
+import {Link, Redirect, Switch, Route} from "react-router-dom";
+import AccountManagement from "../components/account-managment";
+
 class Dashboard extends Component {
     constructor(props){
         super(props)
@@ -33,9 +35,15 @@ class Dashboard extends Component {
     render(){
         return(
             <div className="dashboard">
-                <this.renderSideNav />
-                <div>
-                    {/* put switch here */}
+                <div className="dashboard__side-nav">
+                    {/* <this.renderSideNav /> */}
+                </div>
+                <div className="dashboard__content">
+                <Switch >
+					<Route exact path="/dashboard/account-management" component={AccountManagement} />
+					
+
+				</Switch>
              
                 </div>
                
