@@ -3,6 +3,7 @@ import SideNav from "../components/side-navigation";
 import {Link, Redirect, Switch, Route} from "react-router-dom";
 import AccountManagement from "../components/account-managment";
 import Reports from "../components/reports";
+import ManageUsers from "../components/manage-users";
 
 class Dashboard extends Component {
     constructor(props){
@@ -43,9 +44,8 @@ class Dashboard extends Component {
                 <Switch >
 					<Route exact path="/dashboard/account-management" component={AccountManagement} />
                     <Route exact path="/dashboard/reports" component={Reports} />
-					
-
-				</Switch>
+                    <Route exact path="/dashboard/manage-users" component={ManageUsers} />
+                </Switch>
              
                 </div>
                
