@@ -35,7 +35,7 @@ class Dashboard extends Component {
             <div className="dashboard">
                 <this.renderSideNav />
                 <div>
-                    {/* put switch here? */}
+                    {/* put switch here */}
              
                 </div>
                
