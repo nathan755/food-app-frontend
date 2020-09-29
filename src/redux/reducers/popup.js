@@ -1,7 +1,8 @@
 import account from "./account";
 
 const initalState = {
-    popupVisible:false
+    popupVisible:false,
+    type:""
 }
 
 const popup = (state = initalState, action) => {
@@ -9,7 +10,8 @@ const popup = (state = initalState, action) => {
         case "SET_POPUP":
             return{
                 ...state,
-                popupVisible:true
+                popupVisible:true,
+                type:action.payload
             }
         case "REMOVE_POPUP":
         return{

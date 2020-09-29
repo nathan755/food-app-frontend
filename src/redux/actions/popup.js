@@ -1,6 +1,7 @@
-export const setPopup = () => {
+export const setPopup = (type) => {
     return{
-        type:"SET_POPUP"
+        type:"SET_POPUP",
+        payload:type
     }
 }
 
