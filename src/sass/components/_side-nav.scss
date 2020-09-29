@@ -1,0 +1,39 @@
+.side-nav{
+    background-color: $blue;
+    height: 100%;
+    width: 10%;
+    position: absolute;
+    & i {
+       font-size: 5em;
+       color: white;
+       text-align: center;
+       display: block;
+       margin: 6px;
+    }
+    & h2 {
+        color: white;
+        font-weight: 300;
+        text-align: center;
+    }
+    &__link {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        width: 100%;
+        cursor: pointer;
+        
+        &:hover {
+            background-color: darken($blue, 5%);
+        }
+        & a {
+            margin-left: 6px;
+            color: $background;
+        }
+    }
+    & .button {
+        position: absolute;
+        bottom: 24px;
+        width: 100%;
+        text-align: center;
+    }
+}
