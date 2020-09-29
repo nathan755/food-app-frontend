@@ -38,3 +38,7 @@ ul {
     -webkit-transform: translateX(-50%) translateY(-50%);
     transform: translateX(-50%) translateY(-50%);   
 }
+
+.blur{
+    filter: blur(5px);
+}

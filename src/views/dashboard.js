@@ -35,12 +35,13 @@ class Dashboard extends Component {
     }
     
     render(){
+        console.log("this.props", this.props)
         return(
             <div className="dashboard">
-                <div className="dashboard__side-nav">
+                <div className={`dashboard__side-nav ${this.props.popup.popupVisible===true?"blur":""}`}>
                     <this.renderSideNav />
                 </div>
-                <div className="dashboard__content">
+                <div className={`dashboard__content ${this.props.popup.popupVisible===true ?"blur":""} `}>
                     <Switch >
                         <Route exact path="/dashboard/account-management" component={AccountManagement} />
                         <Route exact path="/dashboard/reports" component={Reports} />
