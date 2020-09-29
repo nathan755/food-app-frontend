@@ -9,22 +9,26 @@ class MenuBox extends Component {
         }
 
         this.onMenuClick = this.onMenuClick.bind(this);
+    }
 
+    static defaultProps = {
+        size:"medium",
+        error:""
     }
 
     onMenuClick(event){
         // Menu box will be used as a link to another page and a selectabkle item in a form.
-        if(this.props.useAsLink)return;
+        if(this.props.useAsLink || this.props.disabled)return;
         this.setState({selected:!this.state.selected});
-        this.props.onClick(event)
+        this.props.onClick(event, this.props.dataName)
     }
 
 
     render(){
         return(
-            <div onClick={this.onMenuClick} className={`menu-box ${this.state.selected ?"selected":""}`}>
+            <div date-name={this.props.dataName} onClick={this.onMenuClick} className={`menu-box ${this.props.size} ${this.props.error} ${this.state.selected ?"selected":""}`}>
                 {this.props.icon}
-                <h2>{this.props.title}</h2>
+                {this.props.size==="small"? <p>{this.props.title}</p>:<h2>{this.props.title}</h2>  }
             </div>
         );
     }
