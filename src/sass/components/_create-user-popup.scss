@@ -1,4 +1,8 @@
 .create-user-popup {
+    background-color:white;
+    box-shadow: 1px 1px 2px;
+    width: 600px;
+    @include center;
     &__box-container{
         display: flex;
         & .menu-box{
