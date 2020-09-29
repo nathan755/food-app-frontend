@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import MenuBox from "./menu-selection";
 import CreateUserPopup from "./popups/create-user";
 import InviteUsersPopup from "./popups/invite-users";
-
+import {setPopup, removePopup} from "../redux/actions/popup";
+import {connect} from "react-redux";
 
 class ManageUsers extends Component {
     constructor(props){
@@ -30,10 +31,12 @@ class ManageUsers extends Component {
 
     onCreateUserMenuClick(){
         this.setState({createUserPopupOpen:true});
+        this.props.setPopup();
     }
 
     onInviteUserMenuClick(){
         this.setState({inviteUserPopupOpen:true});
+        this.props.setPopup()
     }
 
     closePopup(){
@@ -41,6 +44,7 @@ class ManageUsers extends Component {
             createUserPopupOpen:false,
             inviteUserPopupOpen:false
         })
+        this.props.removePopup()
     }
 
     render(){
@@ -73,4 +77,12 @@ class ManageUsers extends Component {
 
 }
 
-export default ManageUsers;
+const mapDispatchToProps = (dispatch)=>{
+    return{
+        setPopup:()=>{dispatch(setPopup())},
+        removePopup:()=>{dispatch(removePopup())}
+    }
+    
+}
+
+export default connect(null, mapDispatchToProps)(ManageUsers);
