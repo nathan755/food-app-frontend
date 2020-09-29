@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import MenuBox from "./menu-selection";
+import CreateUserPopup from "./popups/create-user";
+
 class ManageUsers extends Component {
     constructor(props){
         super(props)
@@ -9,33 +11,47 @@ class ManageUsers extends Component {
             inviteUserPopupOpen:false
         }
 
-        this.onCreateUserClick = this.onCreateUserClick.bind(this);
-        this.onInviteUserClick = this.onInviteUserClick.bind(this);
-        
+        this.onCreateUserMenuClick = this.onCreateUserMenuClick.bind(this);
+        this.onInviteUserMenuClick = this.onInviteUserMenuClick.bind(this);
+        this.sendInvites = this.sendInvites.bind(this);
+        this.addUser = this.addUser.bind(this);
     }
 
-    onCreateUserClick(){
+    sendInvites(){
+
+    }
+
+    addUser(){
+
+    }
+
+    onCreateUserMenuClick(){
         console.log("click")
     }
 
-    onInviteUserClick(){
+    onInviteUserMenuClick(){
         console.log("invite")
     }
 
     render(){
         return(
             <div className="manage-users">
-                <h1>Manage Users</h1>
-                <MenuBox
-                    icon={<i class="fas fa-user-plus"></i>}
-                    title="Create User"
-                    onClick={this.onCreateUserClick}
-                 />
-                 <MenuBox
-                    icon={<i class="fas fa-envelope"></i>}
-                    title="Invite Users"
-                    onClick={this.onInviteUserClick}
-                 />
+                <div className="manage-users__table">
+                    <h1>Manage Users</h1>
+                </div>
+                <div className="manage-users__buttons">
+                    <MenuBox
+                        icon={<i class="fas fa-user-plus"></i>}
+                        title="Create User"
+                        onClick={this.onCreateUserMenuClick}
+                    />
+                    <MenuBox
+                        icon={<i class="fas fa-envelope"></i>}
+                        title="Invite Users"
+                        onClick={this.onInviteUserMenuClick}
+                    />
+                </div>
+                <CreateUserPopup />
             </div>
         )
     }
