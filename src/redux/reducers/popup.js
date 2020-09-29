@@ -1,24 +1,22 @@
-import account from "./account";
-
 const initalState = {
-    popupVisible:false,
-    type:""
+    popupVisible: false,
+    type: ""
 }
 
 const popup = (state = initalState, action) => {
     switch (action.type) {
         case "SET_POPUP":
-            return{
+            return {
                 ...state,
-                popupVisible:true,
-                type:action.payload
+                popupVisible: true,
+                type: action.payload
             }
         case "REMOVE_POPUP":
-        return{
-            ...state,
-            popupVisible:false
-        }
-    
+            return {
+                ...state,
+                popupVisible: false,
+                type: ""
+            }
         default:
             return state;
     }

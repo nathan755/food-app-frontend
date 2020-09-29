@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 class ManageUsers extends Component {
     constructor(props){
         super(props)
-
+        
         this.state = {
             createUserPopupOpen:false,
             inviteUserPopupOpen:false
@@ -31,12 +31,12 @@ class ManageUsers extends Component {
 
     onCreateUserMenuClick(){
         this.setState({createUserPopupOpen:true});
-        this.props.setPopup();
+        this.props.setPopup("create-user");
     }
 
     onInviteUserMenuClick(){
         this.setState({inviteUserPopupOpen:true});
-        this.props.setPopup()
+        this.props.setPopup("invite-users")
     }
 
     closePopup(){
@@ -44,7 +44,7 @@ class ManageUsers extends Component {
             createUserPopupOpen:false,
             inviteUserPopupOpen:false
         })
-        this.props.removePopup()
+        
     }
 
     render(){
@@ -60,29 +60,21 @@ class ManageUsers extends Component {
                         onClick={this.onCreateUserMenuClick}
                     />
                     <MenuBox
-                        
                         icon={<i class="fas fa-envelope"></i>}
                         title="Invite Users"
                         onClick={this.onInviteUserMenuClick}
                     />
                 </div>
-                {this.state.createUserPopupOpen && <CreateUserPopup close={this.closePopup} />}
-                {this.state.inviteUserPopupOpen && <InviteUsersPopup close={this.closePopup} />}
-
-                
-                
             </div>
-        )
+        );
     }
-
 }
 
 const mapDispatchToProps = (dispatch)=>{
     return{
-        setPopup:()=>{dispatch(setPopup())},
+        setPopup:(type)=>{dispatch(setPopup(type))},
         removePopup:()=>{dispatch(removePopup())}
     }
-    
 }
 
 export default connect(null, mapDispatchToProps)(ManageUsers);

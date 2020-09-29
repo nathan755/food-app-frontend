@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import TextFormField from "../text-field";
 import MenuBox from "../menu-selection";
 import Button from "../button";
+import {connect} from "react-redux";
+import { removePopup } from "../../redux/actions/popup";
 
 class CreateUserPopup extends Component {
     constructor(props){
@@ -64,17 +66,17 @@ class CreateUserPopup extends Component {
     }
 
     onCancelClick(){
-        this.props.close() 
+        this.props.removePopup();
     }
 
     validateFields(){
 
     }
-
-
+    
     render(){
         return(
             <div className="create-user-popup">
+                <h1>Create User</h1>
                 <TextFormField 
                     errorMessage={this.state.emailErrorMessage}
                     dataKey="email" 
@@ -117,8 +119,7 @@ class CreateUserPopup extends Component {
                         error={this.state.managerError}
                     />
                 </div>
-                  
-                      <TextFormField 
+                <TextFormField 
                     errorMessage={this.state.nameErrorMessage}
                     dataKey="name" 
                     label="Full Name" 
@@ -126,12 +127,19 @@ class CreateUserPopup extends Component {
                     onChange={this.onInputChange} 
                 />
                 <Button value="Create User" onClick={this.onCreateUserClick}/>
-                <Button value="Cancel" onClick={this.onCancelClick}/>
-
+                <Button value="Cancel" secondary={true} onClick={this.onCancelClick}/>
+                <div className="clear"></div>
             </div>  
-        )
+        );
     }
 
 }
 
-export default CreateUserPopup;
+const mapDispatchToProps = (dispatch) => {
+    return{
+        removePopup:()=>{dispatch(removePopup())}
+    }
+}
+
+
+export default connect(null, mapDispatchToProps)(CreateUserPopup);
