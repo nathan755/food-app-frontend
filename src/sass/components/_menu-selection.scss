@@ -1,0 +1,23 @@
+.menu-box {
+    width: 250px;
+    height: 250px;
+    background-color:white;
+    box-shadow: 1px 1px 2px;
+    text-align: center;
+    margin: 12px;
+    &:active {
+        box-shadow: 2px 2px 4px;
+    }
+    cursor: pointer;
+    & i {
+        font-size: 5em;
+        padding: 6px;
+        margin: 12px;
+        color: $dark-grey;
+    }
+    & h2 {
+        position: relative;
+        top: 36px;
+        color: $dark-grey;
+    }
+}
