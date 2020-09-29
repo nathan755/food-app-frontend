@@ -1,0 +1,15 @@
+.manage-users {
+    height: 100%;
+    &__table {
+        height: 50%;
+        width: 100%;
+    }
+    &__buttons{
+        justify-content: center;
+        align-items: center;
+        
+        height: 50%;
+        width: 100%;
+        display: flex;
+    }
+}

@@ -3,6 +3,9 @@ import SideNav from "../components/side-navigation";
 import {Link, Redirect, Switch, Route} from "react-router-dom";
 import AccountManagement from "../components/account-managment";
 import Reports from "../components/reports";
+import ManageUsers from "../components/manage-users";
+import {connect} from "react-redux";
+import Popup from "../components/popups";
 
 class Dashboard extends Component {
     constructor(props){
@@ -11,7 +14,6 @@ class Dashboard extends Component {
         this.renderSideNav = this.renderSideNav.bind(this);
     }
     
-
     renderSideNav(){
         // in future the config will be different for different users.
         // ie account level users will have access to accoutn management etc. 
@@ -31,27 +33,31 @@ class Dashboard extends Component {
         return( <SideNav config={config}  />)
 
     }
-
-
+    
     render(){
+        console.log("this.props", this.props)
         return(
             <div className="dashboard">
-                <div className="dashboard__side-nav">
+                <div className={`dashboard__side-nav ${this.props.popup.popupVisible===true?"blur":""}`}>
                     <this.renderSideNav />
                 </div>
-                <div className="dashboard__content">
-                <Switch >
-					<Route exact path="/dashboard/account-management" component={AccountManagement} />
-                    <Route exact path="/dashboard/reports" component={Reports} />
-					
-
-				</Switch>
-             
+                <div className={`dashboard__content ${this.props.popup.popupVisible===true ?"blur":""} `}>
+                    <Switch >
+                        <Route exact path="/dashboard/account-management" component={AccountManagement} />
+                        <Route exact path="/dashboard/reports" component={Reports} />
+                        <Route exact path="/dashboard/manage-users" component={ManageUsers} />
+                    </Switch>
                 </div>
-               
+                <Popup />
             </div>
-        )
+        );
     }
 }
 
-export default Dashboard;
+const mapStateToProps = (state) =>{
+    return{
+        popup:state.popup
+    }
+}
+
+export default connect(mapStateToProps)(Dashboard);

@@ -6,6 +6,8 @@ import Axios from "axios";
 // two types of sign up accoutn sign up and user sign up
 // user sign up will be allowed if there are querey params present ie they came from an invite link -- will have to add some sort of sign uo token.
 
+// account sign up
+
 class SignUp extends Component {
     constructor(props){
         super(props)
