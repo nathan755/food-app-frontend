@@ -14,9 +14,9 @@ class Button extends Component {
 
     render(){
         return (
-            <div className={`button ${this.props.style}`}>
+            <div data-key={this.props.dataKey} onClick={this.onClick} className={`button ${this.props.style}`}>
                 {this.props.loading && <i class="fas fa-spinner fa-spin"></i>}
-                <button onClick={this.onClick}>{this.props.loading ? "Loading":this.props.value }</button>
+                <button >{this.props.loading ? "Loading":this.props.value }</button>
                 
             </div>
         );
