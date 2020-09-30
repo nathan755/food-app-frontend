@@ -7,9 +7,14 @@ class Button extends Component {
         this.props.onClick(event);
     }
 
+    static defaultProps = {
+        style:"primary"
+        
+    }
+
     render(){
         return (
-            <div className={`button ${this.props.secondary ? "secondary":""}`}>
+            <div className={`button ${this.props.style}`}>
                 {this.props.loading && <i class="fas fa-spinner fa-spin"></i>}
                 <button onClick={this.onClick}>{this.props.loading ? "Loading":this.props.value }</button>
                 
