@@ -17,6 +17,7 @@ import Button from "./button";
 //              "denholm",
 //              "nathan@mail.com",
 //              "employee"
+//				"button" -----> if button a button will be rendered using button oject below
 //          ],
 //          data:{
 
@@ -26,13 +27,15 @@ import Button from "./button";
 //                 value:"DELETE",
 //                 onclick:()=>{},
 //                 loading:false,
-//                 disabled:false
+//                 disabled:false,
+//					style:"danger"
 //             },
 //             {
 //                 value:"UPDATE",
 //                 onclick:()=>{},
 //                 loading:false,
-//                 disabled:false
+//                 disabled:false,
+//					style:"warning"
 //             }
 //          ]     
 //         }
@@ -46,14 +49,14 @@ class Table extends Component {
 		return (
 		  <div className="table">
 			<table>
-			  <tr>
+			  <tr className="table__header">
 				{this.props.config.header.map((item) => {
 				  return <th>{item}</th>;
 				})}
 			  </tr>
 			  {this.props.config.rows.map((row) => {
 				return (
-				  <tr>
+				  <tr className="table__row">
 					{row.values.map((value) => {
 					  return (
 						<td>
