@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import MenuBox from "./menu-selection";
-import CreateUserPopup from "./popups/create-user";
-import InviteUsersPopup from "./popups/invite-users";
 import {setPopup, removePopup} from "../redux/actions/popup";
 import {connect} from "react-redux";
 import Table from "./table";
+import Axios from "axios";
 
 class ManageUsers extends Component {
     constructor(props){
@@ -15,7 +14,8 @@ class ManageUsers extends Component {
             inviteUserPopupOpen:false,
             selectedRow:{},
             tableConfig:{},
-            loading:true
+            loading:true,
+            users:[]
         }
 
         this.onCreateUserMenuClick = this.onCreateUserMenuClick.bind(this);
@@ -28,37 +28,28 @@ class ManageUsers extends Component {
 
     }
 
-    componentDidMount(){
-        const tableConfig = {
-            title:"Users",
-            header:[
-                "First Name",
-                "Last Name",
-                "Email",
-                "Role",
-                "Action"
-            ],
-            rows:[
-                {
-                id:"1",
-                values:[
-                    "nathan",
-                    "denholm",
-                    "nathan@mail.com",
-                    "employee",
-                    "button",
-
-                    
-                 ],
-                 data:{
-                    firstName:"nathan1",
-                    lastName:"denholm1",
-                    email:"nathan@mail.com1",
-                    role:"employee1"
-                 },
-                 buttons:[
+    async componentDidMount(){
+        try {
+            const userPromise = await Axios.get("http://127.0.0.1:3001/account-users?account=24");
+            const users = userPromise.data;
+            let rows = [];
+            users.forEach((user, index)=>{
+                const values = [
+                    user.first_name,
+                    user.last_name,
+                    user.email,
+                    user.role,
+                    "button"
+                ];
+                const data = {
+                    firstName:user.first_name,
+                    lastName:user.last_name,
+                    email:user.email,
+                    role:user.role
+                };
+                const buttons = [
                     {
-                        dataKey:"1",
+                        dataKey:index,
                         value:"DELETE",
                         onClick:this.onDeleteUserClick,
                         loading:false,
@@ -66,92 +57,41 @@ class ManageUsers extends Component {
                         style:"danger"
                     },
                     {
-                        dataKey:1,
+                        dataKey:index,
                         value:"UPDATE",
                         onClick:this.onUpdateUserClick,
                         loading:false,
                         disabled:false,
                         style:"warning"
                     }
-                 ]     
-                },
-                {
-                    id:"2",
-                    values:[
-                       "nathan",
-                       "denholm",
-                       "nathan@mail.com",
-                       "employee",
-                       "button",
-   
-                       
-                    ],
-                    data:{
-                        firstName:"nathan2",
-                        lastName:"denholm2",
-                        email:"nathan@mail.com2",
-                        role:"employee2"
-                     },
-                    buttons:[
-                        {
-                            dataKey:"2",
-                            value:"DELETE",
-                            onClick:this.onDeleteUserClick,
-                            loading:false,
-                            disabled:false,
-                            style:"danger"
-                        },
-                        {
-                            dataKey:"2",
-                            value:"UPDATE",
-                            onClick:this.onUpdateUserClick,
-                            loading:false,
-                            disabled:false,
-                            style:"warning"
-                        }
-                     ]     
-                   },
-                   {
-                    id:"3",
-                    values:[
-                       "nathan",
-                       "denholm",
-                       "nathan@mail.com",
-                       "employee",
-                       "button",
-   
-                       
-                    ],
-                    data:{
-                        firstName:"nathan3",
-                        lastName:"denholm3",
-                        email:"nathan@mail.com3",
-                        role:"employee3"
-                     },
-                    buttons:[
-                        {
-                            dataKey:"3",
-                            value:"DELETE",
-                            onClick:this.onDeleteUserClick,
-                            loading:false,
-                            disabled:false,
-                            style:"danger"
-                        },
-                        {
-                            dataKey:"3",
-                            value:"UPDATE",
-                            onClick:this.onUpdateUserClick,
-                            loading:false,
-                            disabled:false,
-                            style:"warning"
-                        }
-                     ]     
-                   }
-                   
-            ]
-        };
-        this.setState({tableConfig,loading:false});
+                ];
+                
+                rows.push({
+                    id:index,
+                    values,
+                    data,
+                    buttons
+                });
+            });
+            const tableConfig = {
+                title:"Users",
+                header:[
+                    "First Name",
+                    "Last Name",
+                    "Email",
+                    "Role",
+                    "Action"
+                ],
+                rows:rows
+            }
+            this.setState({ tableConfig, loading:false });
+        } catch (error) {
+            console.log("error",error);
+            // set redux notification
+        }
     }
+
+    
 
     onDeleteUserClick(event){
         const selectedId = event.currentTarget.getAttribute("data-key");
@@ -192,6 +132,7 @@ class ManageUsers extends Component {
 
 
     render(){
+        console.log("props", this.props)
         return(
             <div className="manage-users">
                 <div className="manage-users__table">
@@ -215,6 +156,12 @@ class ManageUsers extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        accountId:state.account.accountId
+    }
+}
+
 const mapDispatchToProps = (dispatch)=>{
     return{
         setPopup:(type)=>{dispatch(setPopup(type))},
@@ -222,4 +169,4 @@ const mapDispatchToProps = (dispatch)=>{
     }
 }
 
-export default connect(null, mapDispatchToProps)(ManageUsers);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageUsers);
