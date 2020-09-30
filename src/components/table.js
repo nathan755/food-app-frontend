@@ -12,6 +12,7 @@ import Button from "./button";
 //     ],
 //     rows:[
 //         {
+//			id:int (unique)
 //          values:[
 //              "nathan",
 //              "denholm",
@@ -28,7 +29,8 @@ import Button from "./button";
 //                 onclick:()=>{},
 //                 loading:false,
 //                 disabled:false,
-//					style:"danger"
+//					style:"danger",
+//					data-key:row.id
 //             },
 //             {
 //                 value:"UPDATE",
@@ -36,6 +38,7 @@ import Button from "./button";
 //                 loading:false,
 //                 disabled:false,
 //					style:"warning"
+//					data-key:row.id
 //             }
 //          ]     
 //         }
@@ -69,6 +72,7 @@ class Table extends Component {
 									loading={button.loading}
 									disabled={button.disabled}
 									style={button.style}
+									dataKey={button.dataKey}
 								  />
 								);
 							  })
