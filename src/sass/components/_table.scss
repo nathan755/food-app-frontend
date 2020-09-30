@@ -1,0 +1,26 @@
+.table {
+    table{
+        width: 75%;
+        text-align: center;
+        tr:nth-child(even){
+            background-color:lighten($blue, 50%);
+        }
+    }
+    & .button{
+        float: none;
+        display:inline-flex;
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+    &__header {
+        background-color: $dark-grey;
+        height: 40px;
+        padding:12px;
+        color: $light-grey;
+    }
+    &__row{
+       td {
+           padding: 6px;
+       }
+    }
+}

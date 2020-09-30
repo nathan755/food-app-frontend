@@ -4,6 +4,7 @@ import CreateUserPopup from "./popups/create-user";
 import InviteUsersPopup from "./popups/invite-users";
 import {setPopup, removePopup} from "../redux/actions/popup";
 import {connect} from "react-redux";
+import Table from "./table";
 
 class ManageUsers extends Component {
     constructor(props){
@@ -19,6 +20,7 @@ class ManageUsers extends Component {
         this.sendInvites = this.sendInvites.bind(this);
         this.addUser = this.addUser.bind(this);
         this.closePopup = this.closePopup.bind(this);
+        this.renderTable = this.renderTable.bind(this);
     }
 
     sendInvites(){
@@ -44,14 +46,123 @@ class ManageUsers extends Component {
             createUserPopupOpen:false,
             inviteUserPopupOpen:false
         })
-        
     }
+
+    renderTable(){
+        const tableConfig = {
+            title:"Users",
+            header:[
+                "First Name",
+                "Last Name",
+                "Email",
+                "Role",
+                "Action"
+            ],
+            rows:[
+                {
+                 values:[
+                    "nathan",
+                    "denholm",
+                    "nathan@mail.com",
+                    "employee",
+                    "button",
+
+                    
+                 ],
+                 data:{
+
+                 },
+                 buttons:[
+                    {
+                        value:"DELETE",
+                        onclick:()=>{},
+                        loading:false,
+                        disabled:false,
+                        style:"danger"
+                    },
+                    {
+                        value:"UPDATE",
+                        onclick:()=>{},
+                        loading:false,
+                        disabled:false,
+                        style:"warning"
+                    }
+                 ]     
+                },
+                {
+                    values:[
+                       "nathan",
+                       "denholm",
+                       "nathan@mail.com",
+                       "employee",
+                       "button",
+   
+                       
+                    ],
+                    data:{
+   
+                    },
+                    buttons:[
+                       {
+                           value:"DELETE",
+                           onclick:()=>{},
+                           loading:false,
+                           disabled:false,
+                           style:"danger"
+                       },
+                       {
+                           value:"UPDATE",
+                           onclick:()=>{},
+                           loading:false,
+                           disabled:false,
+                           style:"warning"
+                       }
+                    ]     
+                   },
+                   {
+                    values:[
+                       "nathan",
+                       "denholm",
+                       "nathan@mail.com",
+                       "employee",
+                       "button",
+   
+                       
+                    ],
+                    data:{
+   
+                    },
+                    buttons:[
+                       {
+                           value:"DELETE",
+                           onclick:()=>{},
+                           loading:false,
+                           disabled:false,
+                           style:"danger"
+                       },
+                       {
+                           value:"UPDATE",
+                           onclick:()=>{},
+                           loading:false,
+                           disabled:false,
+                           style:"warning"
+                       }
+                    ]     
+                   }
+                   
+            ]
+        }
+
+        return(<Table config={tableConfig} />);
+    }
+
 
     render(){
         return(
             <div className="manage-users">
                 <div className="manage-users__table">
                     <h1>Manage Users</h1>
+                    <this.renderTable />
                 </div>
                 <div className="manage-users__buttons">
                     <MenuBox
