@@ -1,0 +1,75 @@
+.notification {
+    height: 75px;
+    color: white;
+    display: flex;
+    align-items: center;
+    box-shadow: 3px 3px 5px $dark-grey;
+    border-radius: 5px;
+    width: 30%;
+    margin: 24px;
+    & i {
+        font-size: 2em;
+        color: white;
+    }
+    &__close {
+        flex: 0.5;
+        cursor: pointer;
+        i {
+            font-size: 1em;
+        }
+    }
+    &__icon-type{
+        background-color: white;
+        flex:1;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &__copy{
+        & h3 {
+            margin-bottom: 3px;
+        }
+        & p {
+            margin-top: 3px;
+        }
+        flex: 4;
+        margin-left: 6px;
+        padding: 6px;
+    }
+}
+.success {
+    background-color:$green;
+    .notification__icon-type{
+        i {
+            color: $green;
+        }
+    }
+}
+
+.danger {
+    background-color:$red;
+    .notification__icon-type{
+        i {
+            color: $red;
+        }
+    }
+}
+
+.warning {
+    background-color:$yellow;
+    .notification__icon-type{
+        i {
+            color: $yellow;
+        }
+    }
+}
+
+.info {
+    background-color:$blue;
+    .notification__icon-type{
+        i {
+            color:$blue;
+        }
+    }
+}
