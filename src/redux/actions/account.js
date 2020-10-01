@@ -20,10 +20,11 @@ export const logout = () => {
     }
 }
 
-export const setAccount = () => {
+export const setAccount = (data) => {
     /** Check if a user is logged in. Ie do they have a valid token */
     return {
-        type:"SET_ACCOUNT"
+        type:"SET_ACCOUNT",
+        payload:data
     }
 }
 

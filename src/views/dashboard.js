@@ -21,13 +21,13 @@ class Dashboard extends Component {
     }
     
     componentDidMount(){
-       this.props.setNotification({
-           title:"Testdddd Notification",
-           copy:"test copy",
-           type:"danger",
-           displayTime:5000
-       })
-       this.setState({loading:false})
+    //    this.props.setNotification({
+    //        title:"Testdddd Notification",
+    //        copy:"test copy",
+    //        type:"danger",
+    //        displayTime:5000
+    //    })
+    //    this.setState({loading:false})
     }
     
     renderSideNav(){
@@ -65,15 +65,15 @@ class Dashboard extends Component {
                     </Switch>
                 </div>
                 <Popup />
-                {
-                (this.state.loading===false && this.props.notification.notificationVisible) &&
+                {/* {
+                (this.props.notification.notificationVisible) &&
                     <Notification
                         displayTime={this.props.notification.displayTime}
                         type={this.props.notification.type}
                         title={this.props.notification.title}
                         copy={this.props.notification.copy}
                     />
-                }
+                } */}
             </div>
         );
     }

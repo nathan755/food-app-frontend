@@ -20,6 +20,15 @@ const account = (state=initialState, action ) => {
             return{
                 ...state,
             }
+        
+        case "SET_ACCOUNT":
+            return {
+                ...state,
+                loggedIn:true,
+                accountId:action.payload.currentUser.accountId,
+                companyName:action.payload.currentUser.company_name,
+                email:action.payload.currentUser.email
+            }
         default:
             return state;
     }
