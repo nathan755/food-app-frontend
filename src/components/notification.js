@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import {connect} from "react-redux";
+import {removeNotification} from "../redux/actions/notification";
+
 /**
 * Notification 
 * props.copy string||undefined
@@ -10,6 +13,8 @@ import React, { Component } from "react";
 class Notification extends Component{
     constructor(props){
         super(props)
+        
+        this.renderIcon = this.renderIcon.bind(this);
     }
 
     static defautProps = {
@@ -18,18 +23,46 @@ class Notification extends Component{
     }
     
     onCloseClick = () => {
-        // send redux action to force close a notificatiojn     
+        this.props.removeNotification();
     }
 
+    renderIcon(){
+        switch (this.props.type) {
+            case "danger":
+                return <i class="fas fa-skull-crossbones"></i>;
+            case "info":
+                return <i class="fas fa-info-circle"></i>;
+            case "success":
+                return <i class="far fa-check-circle"></i>;
+            case "warning":
+                return <i class="fas fa-exclamation-triangle"></i>;
+            default:
+                return null;
+        }
+    }
+    
     render(){
         return(
             <div className={`notification ${this.props.type}`}>
-                <i class="fas fa-times-circle"></i>
-                <h3>{this.props.title}</h3>
-                <p>{this.props.copy}</p>
+                <div className="notification__icon-type">
+                <   this.renderIcon />
+                </div>
+                <div className="notification__copy">
+                    <h3>{this.props.title}</h3>
+                    <p>{this.props.copy}</p>
+                </div>
+                <div onClick={this.onCloseClick} className="notification__close">
+                    <i class="fas fa-times-circle"></i>
+                </div>
             </div>
         );
     }
 }
 
-export default Notification;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeNotification:()=>{dispatch(removeNotification())}
+    }
+}
+
+export default connect(null,mapDispatchToProps)(Notification);
