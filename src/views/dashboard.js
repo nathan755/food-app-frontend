@@ -6,7 +6,7 @@ import Reports from "../components/reports";
 import ManageUsers from "../components/manage-users";
 import {connect} from "react-redux";
 import Popup from "../components/popups";
-
+import Notification from "../components/notification";
 class Dashboard extends Component {
     constructor(props){
         super(props)
@@ -49,6 +49,8 @@ class Dashboard extends Component {
                     </Switch>
                 </div>
                 <Popup />
+                <Notification displayTime={5000} title="Test Notification" type="danger" copy="this is some test copy for a test notification.....!"  />
+
             </div>
         );
     }

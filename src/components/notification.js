@@ -8,18 +8,13 @@ import {removeNotification} from "../redux/actions/notification";
 * props.type string <danger><warning><success><info>||default -> info
 * props.copy string||undefined
 * props.title string
-* props.displayTime int --> default 5000 m/s
+* props.displayTime int
 */
 class Notification extends Component{
     constructor(props){
         super(props)
         
         this.renderIcon = this.renderIcon.bind(this);
-    }
-
-    static defautProps = {
-        type:"info",
-        displayTime:5000
     }
     
     onCloseClick = () => {
@@ -42,6 +37,7 @@ class Notification extends Component{
     }
     
     render(){
+        setTimeout(()=>this.props.removeNotification(), this.props.displayTime)
         return(
             <div className={`notification ${this.props.type}`}>
                 <div className="notification__icon-type">
