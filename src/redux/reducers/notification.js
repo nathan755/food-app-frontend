@@ -13,12 +13,17 @@ const notification = (state=initialState, action) => {
                 notificationVisible:true,
                 copy:action.payload.copy,
                 title:action.payload.title,
-                type:action.payload.type
+                type:action.payload.type,
+                displayTime:action.payload.displayTime
             }
 
         case "REMOVE_NOTIFICATION":
             return{
-                ...state
+                ...state,
+                notificationVisible:false,
+                copy:"",
+                title:"",
+                type:""
             }
         default:
             return {

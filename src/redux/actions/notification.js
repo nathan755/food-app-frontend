@@ -1,3 +1,4 @@
+
 export const setNotification = (config) => {
     return {
         type:"SET_NOTIFICATION",
@@ -6,6 +7,7 @@ export const setNotification = (config) => {
 }
 
 export const removeNotification = () => {
+    
     return {
         type:"REMOVE_NOTIFICATION"
     }

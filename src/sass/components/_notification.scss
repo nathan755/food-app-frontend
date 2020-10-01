@@ -6,8 +6,10 @@
     box-shadow: 3px 3px 5px $dark-grey;
     border-radius: 5px;
     width: 30%;
-    margin: 24px;
+    margin:24px;
     position:absolute;
+    right:-600px;
+    
     & i {
         font-size: 2em;
         color: white;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {connect} from "react-redux";
 import {removeNotification} from "../redux/actions/notification";
+import anime from "animejs";
 
 /**
 * Notification 
@@ -15,6 +16,15 @@ class Notification extends Component{
         super(props)
         
         this.renderIcon = this.renderIcon.bind(this);
+    }
+
+    componentDidMount(){
+        const enter = document.getElementsByClassName("notification")[0];
+        anime({
+            targets:enter,
+            duration:1800,
+            translateX:-650
+        });
     }
     
     onCloseClick = () => {
@@ -37,9 +47,9 @@ class Notification extends Component{
     }
     
     render(){
-        setTimeout(()=>this.props.removeNotification(), this.props.displayTime)
+        setTimeout(()=>this.props.removeNotification(), this.props.displayTime);
         return(
-            <div className={`notification ${this.props.type}`}>
+            <div className={`notification ${this.props.type} ${this.props.notification.notificationVisible ? "open ":"closed"}`}>
                 <div className="notification__icon-type">
                 <   this.renderIcon />
                 </div>
@@ -61,4 +71,11 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(null,mapDispatchToProps)(Notification);
+const mapStateToProps = (state) =>{
+    return{
+        
+        notification:state.notification
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Notification);
