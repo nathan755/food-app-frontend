@@ -6,12 +6,28 @@ import Reports from "../components/reports";
 import ManageUsers from "../components/manage-users";
 import {connect} from "react-redux";
 import Popup from "../components/popups";
+import Notification from "../components/notification";
+import {setNotification} from "../redux/actions/notification";
 
 class Dashboard extends Component {
     constructor(props){
         super(props)
 
         this.renderSideNav = this.renderSideNav.bind(this);
+
+        this.state = {
+            loading:true,
+        }
+    }
+    
+    componentDidMount(){
+       this.props.setNotification({
+           title:"Testdddd Notification",
+           copy:"test copy",
+           type:"danger",
+           displayTime:5000
+       })
+       this.setState({loading:false})
     }
     
     renderSideNav(){
@@ -35,7 +51,7 @@ class Dashboard extends Component {
     }
     
     render(){
-        console.log("this.props", this.props)
+        
         return(
             <div className="dashboard">
                 <div className={`dashboard__side-nav ${this.props.popup.popupVisible===true?"blur":""}`}>
@@ -49,15 +65,31 @@ class Dashboard extends Component {
                     </Switch>
                 </div>
                 <Popup />
+                {
+                (this.state.loading===false && this.props.notification.notificationVisible) &&
+                    <Notification
+                        displayTime={this.props.notification.displayTime}
+                        type={this.props.notification.type}
+                        title={this.props.notification.title}
+                        copy={this.props.notification.copy}
+                    />
+                }
             </div>
         );
     }
 }
 
-const mapStateToProps = (state) =>{
+const mapDispatchToProps = (dispatch)=>{
     return{
-        popup:state.popup
+        setNotification:(config)=>{dispatch(setNotification(config))}
     }
 }
 
-export default connect(mapStateToProps)(Dashboard);
+const mapStateToProps = (state) =>{
+    return{
+        popup:state.popup,
+        notification:state.notification
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Dashboard);
