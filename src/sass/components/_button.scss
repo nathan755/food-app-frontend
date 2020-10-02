@@ -26,6 +26,12 @@
             background-color: darken($blue, 5%);
         }
     }
+    &.success{
+        background-color: $green;
+        &:active{
+            background-color: darken($green, 5%);
+        }
+    }
     &.danger {
         background-color: $red;
         &:active{

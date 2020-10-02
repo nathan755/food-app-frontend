@@ -11,7 +11,7 @@ class Button extends Component {
         style:"primary"
         
     }
-
+    
     render(){
         return (
             <div data-key={this.props.dataKey} onClick={this.onClick} className={`button ${this.props.style}`}>
