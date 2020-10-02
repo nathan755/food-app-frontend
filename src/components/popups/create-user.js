@@ -5,6 +5,8 @@ import Button from "../button";
 import {connect} from "react-redux";
 import { removePopup } from "../../redux/actions/popup";
 import Axios from "axios";
+// this is garbage just use the sign up page and edit it slightly
+ import {setNotification} from "../../redux/actions/notification";
 
 class CreateUserPopup extends Component {
     constructor(props){
@@ -66,7 +68,35 @@ class CreateUserPopup extends Component {
     onCreateUserClick(){
         // make request to db with user data
         if(this.validateFields()){
-            console.log("validated")
+            Axios.post(`http://127.0.0.1:3001/account-sign-up?user=true`,{
+                    email:this.state.email,
+                    password:this.state.password,
+                    role:this.state.role,
+                    first_name:this.state.name,
+                    last_name:this.state.name,
+                    company_id:this.props.account.accountId
+            })
+            .then((response)=>{
+                console.log("response",response)
+                const sucessNotificationConfig = {
+                    copy:"User Created",
+                    title:this.state.name+ "has been added to the system",
+                    displayTime:3000,
+                    type:"success"
+                }
+                this.props.setNotification(sucessNotificationConfig);
+            })
+            .catch((err)=>{
+                console.log("err",err)
+                const failNotificationConfig = {
+                    copy:"Error creating user try agina",
+                    title:"Unable To Create User",
+                    displayTime:3000,
+                    type:"danger"
+                }
+                this.props.setNotification(failNotificationConfig);
+
+            })
         }
     }
 
@@ -114,6 +144,7 @@ class CreateUserPopup extends Component {
     }
     
     render(){
+        console.log("this.props", this.props.account.accountId)
         return(
             <div className="create-user-popup">
                 <h1>Create User</h1>
@@ -178,9 +209,16 @@ class CreateUserPopup extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return{
-        removePopup:()=>{dispatch(removePopup())}
+        removePopup:()=>{dispatch(removePopup())},
+        setNotification:(config)=>{dispatch(setNotification(config))}
+    }
+}
+
+const mapStateToProps = (state) => {
+    return{
+        account:state.account
     }
 }
 
 
-export default connect(null, mapDispatchToProps)(CreateUserPopup);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateUserPopup);
