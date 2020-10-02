@@ -4,6 +4,7 @@ import {setPopup, removePopup} from "../redux/actions/popup";
 import {connect} from "react-redux";
 import Table from "./table";
 import Axios from "axios";
+import {setNotification} from "../redux/actions/notification";
 
 class ManageUsers extends Component {
     constructor(props){
@@ -15,7 +16,8 @@ class ManageUsers extends Component {
             selectedRow:{},
             tableConfig:{},
             loading:true,
-            users:[]
+            users:[],
+            confirmDeletePopupVisible:false
         }
 
         this.onCreateUserMenuClick = this.onCreateUserMenuClick.bind(this);
@@ -87,21 +89,57 @@ class ManageUsers extends Component {
             this.setState({ tableConfig, loading:false });
         } catch (error) {
             console.log("error",error);
-            // set redux notification
+            const notificationConfig = {
+                title:"Error Fetching Users",
+                copy:"A network error occured whilst fetching users",
+                type:"danger",
+                displayTime:3000
+            }
+            this.props.setNotification(notificationConfig);
         }
     }
-
     
-
-    onDeleteUserClick(event){
+    async onDeleteUserClick(event){
+        //  make a GET request to confirm delete - if always delete is selected true/1 do not show popup and just delete user
+        //  if confirm delete is empty / false - > show popup and allow the popup to delete the user.
         const selectedId = event.currentTarget.getAttribute("data-key");
-        const selectedData = this.state.tableConfig.rows.find(item => item.id === selectedId );
+        const selectedData = this.state.tableConfig.rows.find(item => parseInt(item.id) === parseInt(selectedId) );
         this.setState({selectedData:selectedData.data});
+        try {
+            const confirmDelete = await Axios.get(`http://127.0.0.1:3001/confirm-delete?accountId=${this.props.accountId}`);
+            if(confirmDelete.data.confirm_delete === 0){
+                // delete user
+                const deleteUser = await Axios.delete(`http://127.0.0.1:3001/delete-user?userId=${selectedData.data.id}`);
+                if(deleteUser.status === 200){
+                    const successDeleteConfig = {
+                        title:`User Deleted`,
+                        copy:"",
+                        type:"success",
+                        displayTime:3000
+                    }
+                    this.props.setNotification(successDeleteConfig);
+                }
+            }
+            else{
+                // show popup and allow pop up to take over. 
+                this.setState({confirmDeletePopupVisible:true});
+            }
+        } catch (error) {
+            // set redux notification
+            console.log("error",error);
+            const failNotificationConfig = {
+                title:"Error Deleting User",
+                copy:"A network error occured! Unable to delete user",
+                type:"danger",
+                displayTime:3000
+            }
+            this.props.setNotification(failNotificationConfig);
+        }
     }
 
     onUpdateUserClick(event){
         const selectedId = event.currentTarget.getAttribute("data-key");
-        const selectedData = this.state.tableConfig.rows.find(item => item.id === selectedId );
+        const selectedData = this.state.tableConfig.rows.find(item => parseInt(item.id) === parseInt(selectedId) );
         this.setState({selectedData:selectedData.data});
 
     }
@@ -132,7 +170,7 @@ class ManageUsers extends Component {
 
 
     render(){
-        console.log("props", this.props)
+        
         return(
             <div className="manage-users">
                 <div className="manage-users__table">
@@ -165,7 +203,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch)=>{
     return{
         setPopup:(type)=>{dispatch(setPopup(type))},
-        removePopup:()=>{dispatch(removePopup())}
+        removePopup:()=>{dispatch(removePopup())},
+        setNotification:(config)=>{dispatch(setNotification(config))}
     }
 }
 
