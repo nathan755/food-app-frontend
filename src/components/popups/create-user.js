@@ -4,6 +4,7 @@ import MenuBox from "../menu-selection";
 import Button from "../button";
 import {connect} from "react-redux";
 import { removePopup } from "../../redux/actions/popup";
+import Axios from "axios";
 
 class CreateUserPopup extends Component {
     constructor(props){
@@ -16,6 +17,7 @@ class CreateUserPopup extends Component {
             passwordErrorMessage:"",
             confirmPasswordErrorMessage:"",
             nameErrorMessage:"",
+            roleErrorMessage:"",
             role:"",
             email:"",
             password:"",
@@ -63,13 +65,51 @@ class CreateUserPopup extends Component {
 
     onCreateUserClick(){
         // make request to db with user data
+        if(this.validateFields()){
+            console.log("validated")
+        }
     }
 
     onCancelClick(){
+        // add are you sure pop up!
         this.props.removePopup();
     }
 
     validateFields(){
+        // make form component in future and loop over the fields cuz dis is dumb
+        const errorMessage = "Field Required"
+        let isValidated = true, emailErrorMessage="", passwordErrorMessage="",confirmPasswordErrorMessage="",roleErrorMessage="",nameErrorMessage="";
+        if(this.state.email===""){
+            isValidated = false;
+            emailErrorMessage =errorMessage
+        }
+        if(this.state.password===""){
+            isValidated = false;
+            passwordErrorMessage = errorMessage
+        }
+        if(this.state.confirmPassword===""){
+            isValidated = false;
+            confirmPasswordErrorMessage=errorMessage
+        }
+        if(this.state.role===""){
+            isValidated = false;
+            roleErrorMessage = errorMessage
+        }
+        if(this.state.name===""){
+            isValidated = false;
+            nameErrorMessage =errorMessage
+        }
+
+        this.setState({
+            emailErrorMessage,
+            passwordErrorMessage,
+            confirmPasswordErrorMessage,
+            roleErrorMessage,
+            nameErrorMessage
+        })
+
+        return isValidated;
+
 
     }
     
@@ -118,6 +158,7 @@ class CreateUserPopup extends Component {
                         disabled={this.state.disableManager}
                         error={this.state.managerError}
                     />
+                    {this.state.roleErrorMessage!=="" && <small className="roleErrorText">Field Required</small>}
                 </div>
                 <TextFormField 
                     errorMessage={this.state.nameErrorMessage}
