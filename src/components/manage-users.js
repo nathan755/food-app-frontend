@@ -100,8 +100,8 @@ class ManageUsers extends Component {
     }
     
     async onDeleteUserClick(event){
-        //  make a GET request to confirm delete - if always delete is selected true/1 do not show popup and just delete user
-        //  if confirm delete is empty / false - > show popup and allow the popup to delete the user.
+        //  make a GET request to confirm delete -> if always delete is selected true/1 do not show popup and just delete user
+        //  if confirm delete is false / 0 -> show popup and allow pop up to take over.
         const selectedId = event.currentTarget.getAttribute("data-key");
         const selectedData = this.state.tableConfig.rows.find(item => parseInt(item.id) === parseInt(selectedId) );
         this.setState({selectedData:selectedData.data});
@@ -112,8 +112,8 @@ class ManageUsers extends Component {
                 const deleteUser = await Axios.delete(`http://127.0.0.1:3001/delete-user?userId=${selectedData.data.id}`);
                 if(deleteUser.status === 200){
                     const successDeleteConfig = {
-                        title:`User Deleted`,
-                        copy:"",
+                        title:"User Deleted!",
+                        copy:selectedData.data.firstName+" "+selectedData.data.lastName+" "+"has been deleted from your account!",
                         type:"success",
                         displayTime:3000
                     }
@@ -124,9 +124,8 @@ class ManageUsers extends Component {
                 // show popup and allow pop up to take over. 
                 this.setState({confirmDeletePopupVisible:true});
             }
-        } catch (error) {
-            // set redux notification
-            console.log("error",error);
+        } 
+        catch (error) {
             const failNotificationConfig = {
                 title:"Error Deleting User",
                 copy:"A network error occured! Unable to delete user",
