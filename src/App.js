@@ -10,6 +10,7 @@ import { logout } from './redux/actions/account';
 import { setAccount } from "./redux/actions/account";
 import { setNotification } from './redux/actions/notification';
 import Notification from "./components/notification";
+import Playground from './views/playground';
 
 class App extends Component {
 	//	!!!!! <- Fix auth later -> !!!!!!
@@ -62,6 +63,7 @@ class App extends Component {
 					<Route path="/login" component={Login} />
 					<Route path="/sign-up" component={SignUp} />
 					<Route path="/dashboard" component={Dashboard} />
+					<Route path="/playground" component={Playground} />
 
 				</Switch>
 				{
