@@ -2,146 +2,194 @@ import React, { Component } from "react";
 import TextFormField from "../text-field";
 import MenuBox from "../menu-selection";
 import Button from "../button";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import { removePopup } from "../../redux/actions/popup";
 import Axios from "axios";
-// this is garbage just use the sign up page and edit it slightly - change this to user pop up 
- import {setNotification} from "../../redux/actions/notification";
+// this is garbage just use the sign up page and edit it slightly - change this to user pop up
+import { setNotification } from "../../redux/actions/notification";
 
 class CreateUserPopup extends Component {
-    constructor(props){
-        super(props)
-        
+    constructor(props) {
+        super(props);
+
         this.state = {
-            disableEmployee:false,
-            disableManager:false,
-            emailErrorMessage:"",
-            passwordErrorMessage:"",
-            confirmPasswordErrorMessage:"",
-            nameErrorMessage:"",
-            roleErrorMessage:"",
-            role:"",
-            email:"",
-            password:"",
-            confirmPassword:"",
-            name:"",
-            updateUser:false
-        }
+            disableEmployee: false,
+            disableManager: false,
+            emailErrorMessage: "",
+            passwordErrorMessage: "",
+            confirmPasswordErrorMessage: "",
+            nameErrorMessage: "",
+            roleErrorMessage: "",
+            role: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            name: "",
+            updateUser: false,
+            loading: true,
+        };
 
         this.onInputChange = this.onInputChange.bind(this);
         this.onRoleClick = this.onRoleClick.bind(this);
         this.onCreateUserClick = this.onCreateUserClick.bind(this);
         this.onCancelClick = this.onCancelClick.bind(this);
+        this.onUpdateUserClick = this.onUpdateUserClick.bind(this);
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevState.role !== this.state.role){
-            if(this.state.role === "employee"){
-                this.setState({disableManager:true});
-            }
-            else if(this.state.role === "manager"){
-                this.setState({disableEmployee:true});
-            }
-            else {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.role !== this.state.role) {
+            if (this.state.role === "employee") {
+                this.setState({ disableManager: true });
+            } else if (this.state.role === "manager") {
+                this.setState({ disableEmployee: true });
+            } else {
                 this.setState({
-                    disableEmployee:false,
-                    disableManager:false
+                    disableEmployee: false,
+                    disableManager: false,
                 });
             }
         }
     }
 
-    componentDidMount(){
-        if(this.props.popup.config !== undefined ){
+    componentDidMount() {
+        if (this.props.popup.config !== undefined) {
             // if there is config, the pop should should update the user not create user
-            this.setState({updateUser:true});
+            this.setState({
+                updateUser: true,
+            });
         }
-
     }
 
-    onInputChange(event){
+    onInputChange(event) {
         const currentInputValue = event.currentTarget.getAttribute("data-key");
-        this.setState({[currentInputValue]:event.target.value});
+        this.setState({ [currentInputValue]: event.target.value });
     }
 
-    onRoleClick(event, type){
-        console.log("click",type)
-        if(type === "manager"){
-            this.setState({role:this.state.role==="manager"?"":"manager"})
+    onRoleClick(event, type) {
+        console.log("click", type);
+        if (type === "manager") {
+            this.setState({ role: this.state.role === "manager" ? "" : "manager" });
         }
-        if(type === "employee"){
-            this.setState({role:this.state.role==="employee"?"":"employee"})
+        if (type === "employee") {
+            this.setState({ role: this.state.role === "employee" ? "" : "employee" });
         }
     }
 
-    onUpdateUserClick(){
-
-
-    }
-
-    onCreateUserClick(){
-        // make request to db with user data
-        if(this.validateFields()){
-            Axios.post(`http://127.0.0.1:3001/account-sign-up?user=true`,{
-                    email:this.state.email,
-                    password:this.state.password,
-                    role:this.state.role,
-                    first_name:this.state.name,
-                    last_name:this.state.name,
-                    company_id:this.props.account.accountId
-            })
-            .then((response)=>{
-                console.log("response",response)
+    async onUpdateUserClick(){
+        // make patch request
+        // if the field is == ""
+        //      use props data
+        // if the field is !==
+        //      use state, because user has changed data
+        if(this.state.role === ""){
+            this.setState({roleErrorMessage:"Pick a role"})
+            return;
+        }
+        const config = {
+            method:"patch",
+            baseURL:"http://127.0.0.1:3001/",
+            url:"update-user",
+            data:{
+                email:this.state.email===""?this.props.popup.config.email:this.state.email,
+                role:this.state.role,
+                first_name:this.state.email===""?this.props.popup.config.firstName:this.state.name,
+                last_name:this.state.email===""?this.props.popup.config.lastName:this.state.name
+            },
+            params:{
+                userId:this.props.popup.config.id
+            },
+        }
+        try {
+            const res = await Axios(config);
+            if(res.status === 201){
                 const sucessNotificationConfig = {
-                    copy:"User Created",
-                    title:this.state.name+ "has been added to the system",
-                    displayTime:3000,
-                    type:"success"
-                }
+                    copy: "Yay a usere successfully updated",
+                    title: "User Updated",
+                    displayTime: 3000,
+                    type: "success",
+                };
                 this.props.setNotification(sucessNotificationConfig);
-            })
-            .catch((err)=>{
-                console.log("err",err)
-                const failNotificationConfig = {
-                    copy:"Error creating user try agina",
-                    title:"Unable To Create User",
-                    displayTime:3000,
-                    type:"danger"
-                }
-                this.props.setNotification(failNotificationConfig);
-
-            })
+                this.props.removePopup();
+            }
+        } catch (error) {
+            const failNotificationConfig = {
+                copy: "Cant Update User",
+                title: "There was an error updating, try again later",
+                displayTime: 3000,
+                type: "danger",
+            };
+            this.props.setNotification(failNotificationConfig);
         }
     }
 
-    onCancelClick(){
+    onCreateUserClick() {
+        // make request to db with user data
+        if (this.validateFields()) {
+            Axios.post(`http://127.0.0.1:3001/account-sign-up?user=true`, {
+                email: this.state.email,
+                password: this.state.password,
+                role: this.state.role,
+                first_name: this.state.name,
+                last_name: this.state.name,
+                company_id: this.props.account.accountId,
+            })
+                .then((response) => {
+                    console.log("response", response);
+                    const sucessNotificationConfig = {
+                        copy: "User Created",
+                        title: this.state.name + "has been added to the system",
+                        displayTime: 3000,
+                        type: "success",
+                    };
+                    this.props.setNotification(sucessNotificationConfig);
+                    this.props.removePopup();
+                })
+                .catch((err) => {
+                    console.log("err", err);
+                    const failNotificationConfig = {
+                        copy: "Error creating user try agina",
+                        title: "Unable To Create User",
+                        displayTime: 3000,
+                        type: "danger",
+                    };
+                    this.props.setNotification(failNotificationConfig);
+                });
+        }
+    }
+
+    onCancelClick() {
         // add are you sure pop up!
         this.props.removePopup();
     }
 
-    validateFields(){
+    validateFields() {
         // make form component in future and loop over the fields cuz dis is dumb
-        const errorMessage = "Field Required"
-        let isValidated = true, emailErrorMessage="", passwordErrorMessage="",confirmPasswordErrorMessage="",roleErrorMessage="",nameErrorMessage="";
-        if(this.state.email===""){
+        const errorMessage = "Field Required";
+        let isValidated = true,
+            emailErrorMessage = "",
+            passwordErrorMessage = "",
+            confirmPasswordErrorMessage = "",
+            roleErrorMessage = "",
+            nameErrorMessage = "";
+        if (this.state.email === "") {
             isValidated = false;
-            emailErrorMessage =errorMessage
+            emailErrorMessage = errorMessage;
         }
-        if(this.state.password===""){
+        if (this.state.password === "") {
             isValidated = false;
-            passwordErrorMessage = errorMessage
+            passwordErrorMessage = errorMessage;
         }
-        if(this.state.confirmPassword===""){
+        if (this.state.confirmPassword === "") {
             isValidated = false;
-            confirmPasswordErrorMessage=errorMessage
+            confirmPasswordErrorMessage = errorMessage;
         }
-        if(this.state.role===""){
+        if (this.state.role === "") {
             isValidated = false;
-            roleErrorMessage = errorMessage
+            roleErrorMessage = errorMessage;
         }
-        if(this.state.name===""){
+        if (this.state.name === "") {
             isValidated = false;
-            nameErrorMessage =errorMessage
+            nameErrorMessage = errorMessage;
         }
 
         this.setState({
@@ -149,110 +197,115 @@ class CreateUserPopup extends Component {
             passwordErrorMessage,
             confirmPasswordErrorMessage,
             roleErrorMessage,
-            nameErrorMessage
-        })
+            nameErrorMessage,
+        });
 
         return isValidated;
-
-
     }
-    
-    render(){
-        console.log("this.props", this.props.popup)
+
+    render() {
+        console.log("hello", this.props.popup)
         return (
-          <div className="create-user-popup">
-            <h1>{this.state.updateUser ? "Update User":"Create User"}</h1>
-            <TextFormField
-              errorMessage={this.state.emailErrorMessage}
-              dataKey="email"
-              label="Email"
-              placeholder="Email..."
-              onChange={this.onInputChange}
-            />
-            {
-                this.state.updateUser === false &&
-                <>
-                    <TextFormField
-                        errorMessage={this.state.passwordErrorMessage}
-                        dataKey="password"
-                        label="Password"
-                        placeholder="Password..."
-                        onChange={this.onInputChange}
+            <div className="create-user-popup">
+                <h1>{this.state.updateUser ? "Update User" : "Create User"}</h1>
+                <TextFormField
+                    value={
+                        this.props.popup.config !== undefined
+                            ? this.props.popup.config.email
+                            : ""
+                    }
+                    errorMessage={this.state.emailErrorMessage}
+                    dataKey="email"
+                    label="Email"
+                    placeholder="Email..."
+                    onChange={this.onInputChange}
+                />
+                {this.state.updateUser === false && (
+                    <>
+                        <TextFormField
+                            errorMessage={this.state.passwordErrorMessage}
+                            dataKey="password"
+                            label="Password"
+                            placeholder="Password..."
+                            onChange={this.onInputChange}
+                        />
+                        <TextFormField
+                            errorMessage={this.state.confirmPasswordErrorMessage}
+                            dataKey="confirmPassword"
+                            label="Confirm Password"
+                            placeholder="Confirm Password..."
+                            onChange={this.onInputChange}
+                        />
+                    </>
+                )}
+
+                <label className="box-label">Role</label>
+                <div className="create-user-popup__box-container">
+                    <MenuBox
+                        dataName="employee"
+                        error={this.state.employeeError}
+                        size={"small"}
+                        icon={<i class="fas fa-people-carry"></i>}
+                        title="Employee"
+                        onClick={this.onRoleClick}
+                        disabled={this.state.disableEmployee}
                     />
-                    <TextFormField
-                        errorMessage={this.state.confirmPasswordErrorMessage}
-                        dataKey="confirmPassword"
-                        label="Confirm Password"
-                        placeholder="Confirm Password..."
-                        onChange={this.onInputChange}
+                    <MenuBox
+                        dataName="manager"
+                        size={"small"}
+                        icon={<i class="fas fa-tasks"></i>}
+                        title="Manager"
+                        onClick={this.onRoleClick}
+                        disabled={this.state.disableManager}
+                        error={this.state.managerError}
                     />
-                </>
-            }
-            
-            <label className="box-label">Role</label>
-            <div className="create-user-popup__box-container">
-              <MenuBox
-                dataName="employee"
-                error={this.state.employeeError}
-                size={"small"}
-                icon={<i class="fas fa-people-carry"></i>}
-                title="Employee"
-                onClick={this.onRoleClick}
-                disabled={this.state.disableEmployee}
-              />
-              <MenuBox
-                dataName="manager"
-                size={"small"}
-                icon={<i class="fas fa-tasks"></i>}
-                title="Manager"
-                onClick={this.onRoleClick}
-                disabled={this.state.disableManager}
-                error={this.state.managerError}
-              />
-              {this.state.roleErrorMessage !== "" && (
-                <small className="roleErrorText">Field Required</small>
-              )}
+                    {this.state.roleErrorMessage !== "" && (
+                        <small className="roleErrorText">Field Required</small>
+                    )}
+                </div>
+                <TextFormField
+                    value={
+                        this.props.popup.config !== undefined
+                            ? this.props.popup.config.firstName
+                            : ""
+                    }
+                    errorMessage={this.state.nameErrorMessage}
+                    dataKey="name"
+                    label="Full Name"
+                    placeholder="Full Name..."
+                    onChange={this.onInputChange}
+                />
+                <Button
+                    value={this.state.updateUser ? "Upadate User" : "Create User"}
+                    onClick={
+                        this.state.updateUser
+                            ? this.onUpdateUserClick
+                            : this.onCreateUserClick
+                    }
+                />
+                <Button value="Cancel" secondary={true} onClick={this.onCancelClick} />
+                <div className="clear"></div>
             </div>
-            <TextFormField
-              errorMessage={this.state.nameErrorMessage}
-              dataKey="name"
-              label="Full Name"
-              placeholder="Full Name..."
-              onChange={this.onInputChange}
-            />
-            <Button
-              value={this.state.updateUser ? "Upadate User" : "Create User"}
-              onClick={
-                this.state.updateUser
-                  ? this.onUpdateUserClick
-                  : this.onCreateUserClick
-              }
-            />
-            <Button
-              value="Cancel"
-              secondary={true}
-              onClick={this.onCancelClick}
-            />
-            <div className="clear"></div>
-          </div>
         );
     }
-
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return{
-        removePopup:()=>{dispatch(removePopup())},
-        setNotification:(config)=>{dispatch(setNotification(config))}
-    }
-}
+    return {
+        removePopup: () => {
+            dispatch(removePopup());
+        },
+        setNotification: (config) => {
+            dispatch(setNotification(config));
+        },
+    };
+};
 
 const mapStateToProps = (state) => {
-    return{
-        account:state.account,
-        popup:state.popup
-    }
-}
-
+    return {
+        account: state.account,
+        popup: state.popup,
+    };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateUserPopup);
