@@ -11,6 +11,7 @@ import { setAccount } from "./redux/actions/account";
 import { setNotification } from './redux/actions/notification';
 import Notification from "./components/notification";
 import Playground from './views/playground';
+import {initApp} from "./redux/actions/app";
 
 class App extends Component {
 	//	!!!!! <- Fix auth later -> !!!!!!
@@ -38,6 +39,7 @@ class App extends Component {
 			Axios.post("http://127.0.0.1:3001/check-login", {}, config)
 				.then((res) => {
 					this.props.setAccount(res.data);
+					this.props.initApp();
 				})
 				.catch((err) => {
 					console.log("err", err)
@@ -84,7 +86,8 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		logout: () => { dispatch(logout()) },
 		setAccount: (data) => { dispatch(setAccount(data)) },
-		setNotification: (config) => { dispatch(setNotification(config)) }
+		setNotification: (config) => { dispatch(setNotification(config)) },
+		initApp:()=>{dispatch(initApp())}
 	}
 }
 

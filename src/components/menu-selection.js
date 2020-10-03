@@ -5,7 +5,7 @@ class MenuBox extends Component {
         super(props)
 
         this.state = {
-            selected:false
+            selected:this.props.selected
         }
 
         this.onMenuClick = this.onMenuClick.bind(this);
@@ -14,6 +14,10 @@ class MenuBox extends Component {
     static defaultProps = {
         size:"medium",
         error:""
+    }
+
+    componentDidMount(){
+
     }
 
     onMenuClick(event){

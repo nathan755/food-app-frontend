@@ -1,5 +1,5 @@
 const initalState = {
-    loading:false
+    loading:true
 }
 
 const app = (state=initalState,action) => {
@@ -11,7 +11,9 @@ const app = (state=initalState,action) => {
 
             }
         default:
-            return null
+            return {
+                ...state
+            }
     }
 }
 

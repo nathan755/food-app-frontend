@@ -1,6 +1,7 @@
 const initalState = {
     popupVisible: false,
-    type: ""
+    type: "",
+    config:{}
 }
 
 const popup = (state = initalState, action) => {
@@ -9,7 +10,9 @@ const popup = (state = initalState, action) => {
             return {
                 ...state,
                 popupVisible: true,
-                type: action.payload
+                type: action.payload.type,
+                config: action.payload.config
+
             }
         case "REMOVE_POPUP":
             return {

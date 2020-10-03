@@ -45,76 +45,86 @@ class ManageUsers extends Component {
 		// 6.redux account id is set
 		// 7.oops --> now fetch usrs
 		// need to delay fetch in 2 - ie add redux loadign state.
-		//
-		try {
-			const userPromise = await Axios.get(`http://127.0.0.1:3001/account-users?account=${this.props.accountId}`); 
-			console.log("userPromise",userPromise)
-			const users = userPromise.data;
-			let rows = [];
-			users.forEach((user, index)=>{
-				const values = [
-					user.first_name,
-					user.last_name,
-					user.email,
-					user.role,
-					"button"
-				];
-				console.log("user", user)
-				const data = {
-					firstName:user.first_name,
-					lastName:user.last_name,
-					email:user.email,
-					role:user.role,
-					id:user.id // look up if i should not use the actual id on the table
-				};
-				const buttons = [
-					{
-						dataKey:index,
-						value:"DELETE",
-						onClick:this.onDeleteUserClick,
-						loading:false,
-						disabled:false,
-						style:"danger"
-					},
-					{
-						dataKey:index,
-						value:"UPDATE",
-						onClick:this.onUpdateUserClick,
-						loading:false,
-						disabled:false,
-						style:"warning"
-					}
-				];
-				
-				rows.push({
-					id:index,
-					values,
-					data,
-					buttons
+		// still broke --> think this needs to go in componentDidUpdate
+		
+			if(this.props.app.loading === false){
+				try {
+				const userPromise = await Axios.get(`http://127.0.0.1:3001/account-users?account=${this.props.accountId}`); 
+				console.log("userPromise",userPromise)
+				const users = userPromise.data;
+				let rows = [];
+				users.forEach((user, index)=>{
+					const values = [
+						user.first_name,
+						user.last_name,
+						user.email,
+						user.role,
+						"button"
+					];
+					console.log("user", user)
+					const data = {
+						firstName:user.first_name,
+						lastName:user.last_name,
+						email:user.email,
+						role:user.role,
+						id:user.id // look up if i should not use the actual id on the table
+					};
+					const buttons = [
+						{
+							dataKey:index,
+							value:"DELETE",
+							onClick:this.onDeleteUserClick,
+							loading:false,
+							disabled:false,
+							style:"danger"
+						},
+						{
+							dataKey:index,
+							value:"UPDATE",
+							onClick:this.onUpdateUserClick,
+							loading:false,
+							disabled:false,
+							style:"warning"
+						}
+					];
+					
+					rows.push({
+						id:index,
+						values,
+						data,
+						buttons
+					});
 				});
-			});
-			const tableConfig = {
-				title:"Users",
-				header:[
-					"First Name",
-					"Last Name",
-					"Email",
-					"Role",
-					"Action"
-				],
-				rows:rows
+				const tableConfig = {
+					title:"Users",
+					header:[
+						"First Name",
+						"Last Name",
+						"Email",
+						"Role",
+						"Action"
+					],
+					rows:rows
+				}
+
+				this.setState({ tableConfig, loading:false });
+			} catch (error) {
+				console.log("error",error);
+				const notificationConfig = {
+					title:"Error Fetching Users",
+					copy:"A network error occured whilst fetching users",
+					type:"danger",
+					displayTime:3000
+				}
+				this.props.setNotification(notificationConfig);
 			}
-			this.setState({ tableConfig, loading:false });
-		} catch (error) {
-			console.log("error",error);
-			const notificationConfig = {
-				title:"Error Fetching Users",
-				copy:"A network error occured whilst fetching users",
-				type:"danger",
-				displayTime:3000
+
+
+				
 			}
-			this.props.setNotification(notificationConfig);
-		}
+		
+
+
 	}
 	
 	async onDeleteUserClick(event){
@@ -163,8 +173,11 @@ class ManageUsers extends Component {
 	}
 	
 	onUpdateUserClick(event){
+		
 		const selectedId = event.currentTarget.getAttribute("data-key");
 		const selectedData = this.state.tableConfig.rows.find(item => parseInt(item.id) === parseInt(selectedId) );
+		console.log("selectedData",selectedData.data)
+		this.props.setPopup("create-user", selectedData.data );
 		this.setState({selectedData:selectedData.data});
 
 	}
@@ -187,7 +200,7 @@ class ManageUsers extends Component {
 	}
 
 	renderTable(){
-		if(!this.state.loading){
+		if(!this.state.loading ){
 			return(<Table config={this.state.tableConfig} />);
 		}
 		return null;
@@ -195,7 +208,7 @@ class ManageUsers extends Component {
 
 
 	render(){
-		
+		console.log("this", this.props.app)
 		return(
 			<div className="manage-users">
 				<div className="manage-users__table">
@@ -221,13 +234,14 @@ class ManageUsers extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		accountId:state.account.accountId
+		accountId:state.account.accountId,
+		app:state.app
 	}
 }
 
 const mapDispatchToProps = (dispatch)=>{
 	return{
-		setPopup:(type)=>{dispatch(setPopup(type))},
+		setPopup:(type,config)=>{dispatch(setPopup(type, config))},
 		removePopup:()=>{dispatch(removePopup())},
 		setNotification:(config)=>{dispatch(setNotification(config))}
 	}
