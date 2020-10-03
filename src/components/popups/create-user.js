@@ -5,7 +5,7 @@ import Button from "../button";
 import {connect} from "react-redux";
 import { removePopup } from "../../redux/actions/popup";
 import Axios from "axios";
-// this is garbage just use the sign up page and edit it slightly
+// this is garbage just use the sign up page and edit it slightly - change this to user pop up 
  import {setNotification} from "../../redux/actions/notification";
 
 class CreateUserPopup extends Component {
@@ -24,7 +24,8 @@ class CreateUserPopup extends Component {
             email:"",
             password:"",
             confirmPassword:"",
-            name:""
+            name:"",
+            updateUser:false
         }
 
         this.onInputChange = this.onInputChange.bind(this);
@@ -50,6 +51,14 @@ class CreateUserPopup extends Component {
         }
     }
 
+    componentDidMount(){
+        if(this.props.popup.config !== undefined ){
+            // if there is config, the pop should should update the user not create user
+            this.setState({updateUser:true});
+        }
+
+    }
+
     onInputChange(event){
         const currentInputValue = event.currentTarget.getAttribute("data-key");
         this.setState({[currentInputValue]:event.target.value});
@@ -63,6 +72,11 @@ class CreateUserPopup extends Component {
         if(type === "employee"){
             this.setState({role:this.state.role==="employee"?"":"employee"})
         }
+    }
+
+    onUpdateUserClick(){
+
+
     }
 
     onCreateUserClick(){
@@ -144,64 +158,83 @@ class CreateUserPopup extends Component {
     }
     
     render(){
-        console.log("this.props", this.props.account.accountId)
-        return(
-            <div className="create-user-popup">
-                <h1>Create User</h1>
-                <TextFormField 
-                    errorMessage={this.state.emailErrorMessage}
-                    dataKey="email" 
-                    label="Email" 
-                    placeholder="Email..."
-                    onChange={this.onInputChange} 
-                />
-                <TextFormField 
-                    errorMessage={this.state.passwordErrorMessage}
-                    dataKey="password" 
-                    label="Password" 
-                    placeholder="Password..."
-                    onChange={this.onInputChange} 
-                />
-                <TextFormField 
-                    errorMessage={this.state.confirmPasswordErrorMessage}
-                    dataKey="confirmPassword" 
-                    label="Confirm Password" 
-                    placeholder="Confirm Password..."
-                    onChange={this.onInputChange} 
-                />
-                <label className="box-label">Role</label>
-                <div className="create-user-popup__box-container">
-                    <MenuBox
-                        dataName="employee"
-                        error={this.state.employeeError}
-                        size={"small"}
-                        icon={<i class="fas fa-people-carry"></i>}
-                        title="Employee"
-                        onClick={this.onRoleClick}
-                        disabled={this.state.disableEmployee}
+        console.log("this.props", this.props.popup)
+        return (
+          <div className="create-user-popup">
+            <h1>{this.state.updateUser ? "Update User":"Create User"}</h1>
+            <TextFormField
+              errorMessage={this.state.emailErrorMessage}
+              dataKey="email"
+              label="Email"
+              placeholder="Email..."
+              onChange={this.onInputChange}
+            />
+            {
+                this.state.updateUser === false &&
+                <>
+                    <TextFormField
+                        errorMessage={this.state.passwordErrorMessage}
+                        dataKey="password"
+                        label="Password"
+                        placeholder="Password..."
+                        onChange={this.onInputChange}
                     />
-                    <MenuBox
-                        dataName="manager"
-                        size={"small"}
-                        icon={<i class="fas fa-tasks"></i>}
-                        title="Manager"
-                        onClick={this.onRoleClick}
-                        disabled={this.state.disableManager}
-                        error={this.state.managerError}
+                    <TextFormField
+                        errorMessage={this.state.confirmPasswordErrorMessage}
+                        dataKey="confirmPassword"
+                        label="Confirm Password"
+                        placeholder="Confirm Password..."
+                        onChange={this.onInputChange}
                     />
-                    {this.state.roleErrorMessage!=="" && <small className="roleErrorText">Field Required</small>}
-                </div>
-                <TextFormField 
-                    errorMessage={this.state.nameErrorMessage}
-                    dataKey="name" 
-                    label="Full Name" 
-                    placeholder="Full Name..."
-                    onChange={this.onInputChange} 
-                />
-                <Button value="Create User" onClick={this.onCreateUserClick}/>
-                <Button value="Cancel" secondary={true} onClick={this.onCancelClick}/>
-                <div className="clear"></div>
-            </div>  
+                </>
+            }
+            
+            <label className="box-label">Role</label>
+            <div className="create-user-popup__box-container">
+              <MenuBox
+                dataName="employee"
+                error={this.state.employeeError}
+                size={"small"}
+                icon={<i class="fas fa-people-carry"></i>}
+                title="Employee"
+                onClick={this.onRoleClick}
+                disabled={this.state.disableEmployee}
+              />
+              <MenuBox
+                dataName="manager"
+                size={"small"}
+                icon={<i class="fas fa-tasks"></i>}
+                title="Manager"
+                onClick={this.onRoleClick}
+                disabled={this.state.disableManager}
+                error={this.state.managerError}
+              />
+              {this.state.roleErrorMessage !== "" && (
+                <small className="roleErrorText">Field Required</small>
+              )}
+            </div>
+            <TextFormField
+              errorMessage={this.state.nameErrorMessage}
+              dataKey="name"
+              label="Full Name"
+              placeholder="Full Name..."
+              onChange={this.onInputChange}
+            />
+            <Button
+              value={this.state.updateUser ? "Upadate User" : "Create User"}
+              onClick={
+                this.state.updateUser
+                  ? this.onUpdateUserClick
+                  : this.onCreateUserClick
+              }
+            />
+            <Button
+              value="Cancel"
+              secondary={true}
+              onClick={this.onCancelClick}
+            />
+            <div className="clear"></div>
+          </div>
         );
     }
 
@@ -216,7 +249,8 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return{
-        account:state.account
+        account:state.account,
+        popup:state.popup
     }
 }
 
