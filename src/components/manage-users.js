@@ -42,7 +42,8 @@ class ManageUsers extends Component {
 		// 3.App recieves data 
 		// 4.App fires setAccount action
 		// 5.manage user recieves nothing
-		// 
+		// 6.redux account id is set
+		// 7.oops --> now fetch usrs
 		// need to delay fetch in 2 - ie add redux loadign state.
 		//
 		try {
