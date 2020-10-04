@@ -29,11 +29,8 @@ class ManageUsers extends Component {
 		this.onUpdateUserClick = this.onUpdateUserClick.bind(this);
 		this.onConfirmDeleteNoClick = this.onConfirmDeleteNoClick.bind(this);
 		this.onConfirmDeleteYesClick = this.onConfirmDeleteYesClick.bind(this);
-
-
-
 	}
-
+	
 	async componentDidMount() {
 		try {
 			const userPromise = await Axios.get(`http://127.0.0.1:3001/account-users?account=${this.props.accountId}`);
@@ -115,7 +112,6 @@ class ManageUsers extends Component {
 				else {
 					this.setState({ confirmDeletePopupVisible: true });
 				}
-
 			}
 			catch (error) {
 				console.log("error", error)
@@ -128,18 +124,16 @@ class ManageUsers extends Component {
 				this.props.setNotification(failNotificationConfig);
 			}
 		});
-
 	}
-	
+
 	onConfirmDeleteYesClick() {
 		this.deleteUser(this.state.selectedData);
 	}
 
 	async deleteUser(selectedData) {
 		try {
-			const deleteUser = await Axios.delete(`http://127.0.0.1:3000/delete-user?userId=${selectedData.id}`);
+			const deleteUser = await Axios.delete(`http://127.0.0.1:300/delete-user?userId=${selectedData.id}`);
 			if (deleteUser.status === 200) {
-				console.log("success")
 				const successDeleteConfig = {
 					title: "User Deleted!",
 					copy: selectedData.firstName + " " + selectedData.lastName + " " + "has been deleted from your account!",
@@ -149,10 +143,16 @@ class ManageUsers extends Component {
 				this.props.setNotification(successDeleteConfig);
 				this.setState({ confirmDeletePopupVisible: false });
 			}
-		} catch (error) {
-
 		}
-
+		catch (error) {
+			const failNotificationConfig = {
+				title: "Error Deleting User",
+				copy: "A network error occured! Unable to delete user",
+				type: "danger",
+				displayTime: 3000
+			}
+			this.props.setNotification(failNotificationConfig);
+		}
 	}
 
 	onConfirmDeleteNoClick() {
@@ -160,13 +160,10 @@ class ManageUsers extends Component {
 	}
 
 	onUpdateUserClick(event) {
-
 		const selectedId = event.currentTarget.getAttribute("data-key");
 		const selectedData = this.state.tableConfig.rows.find(item => parseInt(item.id) === parseInt(selectedId));
-
 		this.props.setPopup("create-user", selectedData.data);
 		this.setState({ selectedData: selectedData.data });
-
 	}
 
 	onCreateUserMenuClick() {
@@ -176,14 +173,14 @@ class ManageUsers extends Component {
 
 	onInviteUserMenuClick() {
 		this.setState({ inviteUserPopupOpen: true });
-		this.props.setPopup("invite-users")
+		this.props.setPopup("invite-users");
 	}
 
 	closePopup() {
 		this.setState({
 			createUserPopupOpen: false,
 			inviteUserPopupOpen: false
-		})
+		});
 	}
 
 	renderTable() {
@@ -195,7 +192,6 @@ class ManageUsers extends Component {
 
 
 	render() {
-
 		return (
 			<div className="manage-users">
 				<div className="manage-users__table">
