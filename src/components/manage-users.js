@@ -32,6 +32,7 @@ class ManageUsers extends Component {
 	}
 	
 	async componentDidMount() {
+		
 		try {
 			const userPromise = await Axios.get(`http://127.0.0.1:3001/account-users?account=${this.props.accountId}`);
 			const users = userPromise.data;
@@ -110,6 +111,7 @@ class ManageUsers extends Component {
 					this.deleteUser(this.state.selectedData);
 				}
 				else {
+					document.getElementsByClassName("dashboard__side-nav")[0].className += " blur";
 					this.setState({ confirmDeletePopupVisible: true });
 				}
 			}
@@ -132,7 +134,8 @@ class ManageUsers extends Component {
 
 	async deleteUser(selectedData) {
 		try {
-			const deleteUser = await Axios.delete(`http://127.0.0.1:300/delete-user?userId=${selectedData.id}`);
+			const deleteUser = await Axios.delete(`http://127.0.0.1:3001/delete-user?userId=${selectedData.id}`);
+			console.log("deleteUser",deleteUser)
 			if (deleteUser.status === 200) {
 				const successDeleteConfig = {
 					title: "User Deleted!",
@@ -141,6 +144,8 @@ class ManageUsers extends Component {
 					displayTime: 3000
 				}
 				this.props.setNotification(successDeleteConfig);
+				const sideNav = document.getElementsByClassName("dashboard__side-nav")[0];
+				sideNav.classList.remove("blur");
 				this.setState({ confirmDeletePopupVisible: false });
 			}
 		}
@@ -156,6 +161,8 @@ class ManageUsers extends Component {
 	}
 
 	onConfirmDeleteNoClick() {
+		const sideNav = document.getElementsByClassName("dashboard__side-nav")[0];
+		sideNav.classList.remove("blur");
 		this.setState({ confirmDeletePopupVisible: false })
 	}
 
@@ -193,7 +200,7 @@ class ManageUsers extends Component {
 
 	render() {
 		return (
-			<div className="manage-users">
+			<div className={`manage-users ${this.state.confirmDeletePopupVisible ?"blur":""}`}>
 				<div className="manage-users__table">
 					<h1>Manage Users</h1>
 					<this.renderTable />
@@ -210,7 +217,10 @@ class ManageUsers extends Component {
 						onClick={this.onInviteUserMenuClick}
 					/>
 				</div>
-				{this.state.confirmDeletePopupVisible && <AreYouSure onNoClick={this.onConfirmDeleteNoClick} onYesClick={this.onConfirmDeleteYesClick} />}
+				
+					{this.state.confirmDeletePopupVisible && <AreYouSure onNoClick={this.onConfirmDeleteNoClick} onYesClick={this.onConfirmDeleteYesClick} />}
+				
+				
 			</div>
 		);
 	}
