@@ -1,0 +1,11 @@
+.invite-users-popup {
+    @include center;
+    background-color:white;
+    box-shadow: 1px 1px 2px;
+    width: 500px;
+    height: 500px;
+    &__role{
+        display: flex;
+    }
+
+}

@@ -7,6 +7,7 @@ import Axios from "axios";
 import { setNotification } from "../redux/actions/notification";
 import AreYouSure from "./popups/are-you-sure";
 import CreateUser from "./popups/create-user";
+import InviteUsers from "./popups/invite-users";
 
 class ManageUsers extends Component {
 	constructor(props) {
@@ -216,11 +217,12 @@ class ManageUsers extends Component {
 	}
 
 	onCreateUserMenuClick() {
-		this.handleBlur()
+		this.handleBlur();
 		this.setState({ createUserPopupOpen: true, userPopupType:"create-user" });
 	}
 	
 	onInviteUserMenuClick() {
+		this.handleBlur();
 		this.setState({ inviteUserPopupOpen: true });
 	}
 	
@@ -235,9 +237,7 @@ class ManageUsers extends Component {
 	
 	render() {
 		return (
-      <div
-        className={`manage-users`}
-      >
+      <div className={`manage-users`}>
         <div className="manage-users__table">
           <h1>Manage Users</h1>
           <this.renderTable />
@@ -267,6 +267,9 @@ class ManageUsers extends Component {
             closePopup={this.closePopup}
             onSubmit={this.onEditUserPopupSubmit}
           />
+        )}
+        {this.state.inviteUserPopupOpen && (
+          <InviteUsers closePopup={this.closePopup} />
         )}
       </div>
     );
