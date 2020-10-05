@@ -47,6 +47,7 @@ class InviteUsersPopup extends Component {
                     displayTime: 3000
                 }
                 this.props.setNotification(failNotificationConfig);
+                this.props.closePopup();
             }
         }
     }
