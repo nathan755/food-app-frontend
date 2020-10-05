@@ -5,12 +5,17 @@ class TextFormField extends Component {
         super(props)
 
         this.state = {
-            value:"",
+            value:this.props.value,
         }
 
         this.onInputChange = this.onInputChange.bind(this);
 
     }
+
+
+    
+
+
     
     onInputChange(event){
         this.setState({value:event.target.value});
@@ -23,7 +28,7 @@ class TextFormField extends Component {
             <div className={`form-field-text`}>
                 <label>{this.props.label}</label>
                 <div className={`form-field-text__input ${this.props.errorMessage !=="" ? "error":""}`}>
-                    <input onChange={this.props.onChange} data-key={this.props.dataKey} placeholder={this.props.placeholder}/>
+                    <input value={this.state.value} onChange={this.onInputChange} data-key={this.props.dataKey} placeholder={this.props.placeholder}/>
                 </div>
                 <small>{this.props.errorMessage}</small>
             </div>

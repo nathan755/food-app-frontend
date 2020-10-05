@@ -1,0 +1,21 @@
+.are-you-sure {
+    background-color: $background;
+    height: 200px;
+    width: 20%;
+    text-align: center;
+    box-shadow: 2px 2px 4px;
+    display: flex;
+    flex-direction: column;
+    @include center;
+    h2 {
+        color: $dark-grey;
+    }
+    p {
+        color: $dark-grey;
+    }
+    & .button {
+        margin: 6px;
+        float: none;
+        display: inline-flex;
+    }
+}

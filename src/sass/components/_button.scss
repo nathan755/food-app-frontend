@@ -1,5 +1,4 @@
 .button {
-    background-color: $blue;
     height: 30px;
     width: 100px;
     cursor: pointer;
@@ -8,9 +7,6 @@
     justify-content: center;
     float: right;
     border-radius: 2px;
-    &:active{
-        background-color: darken($blue, 5%);
-    }
     & button {
         border: none;
         outline: none;
@@ -20,5 +16,29 @@
     }
     & i {
         color: white;
+    }
+    &.primary{
+        background-color: $blue;
+        &:active{
+            background-color: darken($blue, 5%);
+        }
+    }
+    &.success{
+        background-color: $green;
+        &:active{
+            background-color: darken($green, 5%);
+        }
+    }
+    &.danger {
+        background-color: $red;
+        &:active{
+            background-color: darken($red, 5%);
+        }
+    }
+    &.warning {
+        background-color: $yellow;
+        &:active{
+            background-color: darken($yellow, 5%);
+        }
     }
 }

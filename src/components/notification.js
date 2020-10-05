@@ -5,7 +5,7 @@ import anime from "animejs";
 
 /**
 * Notification 
-* props.copy string||undefined
+* 
 * props.type string <danger><warning><success><info>||default -> info
 * props.copy string||undefined
 * props.title string

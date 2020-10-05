@@ -4,6 +4,7 @@ $green:#00C89A;
 $yellow:#FEB608;
 $dark-grey:#5E6571;
 $background:#f7f8fc;
+$light-grey:#eeeeee;
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -12,6 +13,9 @@ body {
     padding: 0;
     
 }
+
+
+
 a {
     text-decoration: inherit;
     color: inherit;
@@ -39,6 +43,15 @@ ul {
     transform: translateX(-50%) translateY(-50%);   
 }
 
-.blur{
-    filter: blur(5px);
+.blur > *:not(.popup) {
+    filter: blur(7px);
+}
+
+table { 
+    border-collapse:collapse;
+    
+ }
+
+td {
+    border: 1px solid;
 }
