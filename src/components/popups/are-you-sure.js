@@ -23,7 +23,7 @@ import Button from "../button";
 function AreYouSure(props) {
 return(
     
-        <div className="are-you-sure">
+        <div className="are-you-sure popup">
             <div>
                 <h2>Are You Sure?</h2>
             </div>
