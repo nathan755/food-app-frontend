@@ -25,7 +25,6 @@ class CreateUserPopup extends Component {
             password: "",
             confirmPassword: "",
             name: "",
-            updateUser: false,
             loading: true,
         };
 
@@ -50,23 +49,13 @@ class CreateUserPopup extends Component {
             }
         }
     }
-
-    componentDidMount() {
-        if (this.props.popup.config !== undefined) {
-            // if there is config, the pop should should update the user not create user
-            this.setState({
-                updateUser: true,
-            });
-        }
-    }
-
+    
     onInputChange(event) {
         const currentInputValue = event.currentTarget.getAttribute("data-key");
         this.setState({ [currentInputValue]: event.target.value });
     }
 
     onRoleClick(event, type) {
-        console.log("click", type);
         if (type === "manager") {
             this.setState({ role: this.state.role === "manager" ? "" : "manager" });
         }
@@ -76,10 +65,9 @@ class CreateUserPopup extends Component {
     }
 
     async onUpdateUserClick(){
-        // make patch request
-        // if the field is == ""
+        // if field == "":
         //      use props data
-        // if the field is !==
+        // if field !== "":
         //      use state, because user has changed data
         if(this.state.role === ""){
             this.setState({roleErrorMessage:"Pick a role"})
@@ -90,28 +78,30 @@ class CreateUserPopup extends Component {
             baseURL:"http://127.0.0.1:3001/",
             url:"update-user",
             data:{
-                email:this.state.email===""?this.props.popup.config.email:this.state.email,
+                email:this.state.email===""?this.props.config.email:this.state.email,
                 role:this.state.role,
-                first_name:this.state.email===""?this.props.popup.config.firstName:this.state.name,
-                last_name:this.state.email===""?this.props.popup.config.lastName:this.state.name
+                first_name:this.state.email===""?this.props.config.firstName:this.state.name,
+                last_name:this.state.email===""?this.props.config.lastName:this.state.name
             },
             params:{
-                userId:this.props.popup.config.id
+                userId:this.props.config.id
             },
         }
         try {
             const res = await Axios(config);
             if(res.status === 201){
                 const sucessNotificationConfig = {
-                    copy: "Yay a usere successfully updated",
+                    copy: this.props.config.firstName +" "+this.props.config.lastName +"details were updated",
                     title: "User Updated",
                     displayTime: 3000,
                     type: "success",
                 };
                 this.props.setNotification(sucessNotificationConfig);
-                this.props.removePopup();
+                this.props.closePopup();
+                this.props.onSubmit();
             }
-        } catch (error) {
+        } 
+        catch (error) {
             const failNotificationConfig = {
                 copy: "Cant Update User",
                 title: "There was an error updating, try again later",
@@ -121,10 +111,10 @@ class CreateUserPopup extends Component {
             this.props.setNotification(failNotificationConfig);
         }
     }
-
+    
     onCreateUserClick() {
-        // make request to db with user data
         if (this.validateFields()) {
+            // set query param <user=true> because /signup handles account and user signup
             Axios.post(`http://127.0.0.1:3001/account-sign-up?user=true`, {
                 email: this.state.email,
                 password: this.state.password,
@@ -133,33 +123,31 @@ class CreateUserPopup extends Component {
                 last_name: this.state.name,
                 company_id: this.props.account.accountId,
             })
-                .then((response) => {
-                    console.log("response", response);
-                    const sucessNotificationConfig = {
-                        copy: "User Created",
-                        title: this.state.name + "has been added to the system",
-                        displayTime: 3000,
-                        type: "success",
-                    };
+            .then((response) => {
+                const sucessNotificationConfig = {
+                    copy: "User Created",
+                    title: this.state.name + "has been added to the system",
+                    displayTime: 3000,
+                    type: "success",
+                };
                     this.props.setNotification(sucessNotificationConfig);
-                    this.props.removePopup();
+                    // call parent create user function => trigger table to fetch updated data
+                    this.props.onSubmit();
                 })
-                .catch((err) => {
-                    console.log("err", err);
-                    const failNotificationConfig = {
-                        copy: "Error creating user try agina",
-                        title: "Unable To Create User",
-                        displayTime: 3000,
-                        type: "danger",
-                    };
-                    this.props.setNotification(failNotificationConfig);
-                });
+            .catch((err) => {
+                const failNotificationConfig = {
+                    copy: "Error creating user try agina",
+                    title: "Unable To Create User",
+                    displayTime: 3000,
+                    type: "danger",
+                };
+                this.props.setNotification(failNotificationConfig);
+            });
         }
     }
 
     onCancelClick() {
-        // add are you sure pop up!
-        this.props.removePopup();
+        this.props.closePopup();
     }
 
     validateFields() {
@@ -191,7 +179,6 @@ class CreateUserPopup extends Component {
             isValidated = false;
             nameErrorMessage = errorMessage;
         }
-
         this.setState({
             emailErrorMessage,
             passwordErrorMessage,
@@ -199,19 +186,17 @@ class CreateUserPopup extends Component {
             roleErrorMessage,
             nameErrorMessage,
         });
-
         return isValidated;
     }
 
     render() {
-        console.log("hello", this.props.popup)
-        return (
-            <div className="create-user-popup">
-                <h1>{this.state.updateUser ? "Update User" : "Create User"}</h1>
+       return (
+            <div className="create-user-popup popup">
+                <h1>{this.props.type === "update-user" ? "Update User" : "Create User"}</h1>
                 <TextFormField
                     value={
-                        this.props.popup.config !== undefined
-                            ? this.props.popup.config.email
+                        this.props.type === "update-user"
+                            ? this.props.config.email
                             : ""
                     }
                     errorMessage={this.state.emailErrorMessage}
@@ -220,7 +205,7 @@ class CreateUserPopup extends Component {
                     placeholder="Email..."
                     onChange={this.onInputChange}
                 />
-                {this.state.updateUser === false && (
+                {this.props.type === "create-user" && (
                     <>
                         <TextFormField
                             errorMessage={this.state.passwordErrorMessage}
@@ -238,7 +223,6 @@ class CreateUserPopup extends Component {
                         />
                     </>
                 )}
-
                 <label className="box-label">Role</label>
                 <div className="create-user-popup__box-container">
                     <MenuBox
@@ -265,8 +249,8 @@ class CreateUserPopup extends Component {
                 </div>
                 <TextFormField
                     value={
-                        this.props.popup.config !== undefined
-                            ? this.props.popup.config.firstName
+                        this.props.type === "update-user"
+                            ? this.props.config.firstName
                             : ""
                     }
                     errorMessage={this.state.nameErrorMessage}
@@ -276,9 +260,9 @@ class CreateUserPopup extends Component {
                     onChange={this.onInputChange}
                 />
                 <Button
-                    value={this.state.updateUser ? "Upadate User" : "Create User"}
+                    value={this.props.type==="update-user" ? "Update User" : "Create User"}
                     onClick={
-                        this.state.updateUser
+                        this.props.type === "update-user" 
                             ? this.onUpdateUserClick
                             : this.onCreateUserClick
                     }
@@ -292,9 +276,6 @@ class CreateUserPopup extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        removePopup: () => {
-            dispatch(removePopup());
-        },
         setNotification: (config) => {
             dispatch(setNotification(config));
         },
